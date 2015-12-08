@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.Audio", "RadXAu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.Vision", "RadXAutomat.Vision\RadXAutomat.Vision.csproj", "{D5D235EC-8D54-459D-8FBE-FD104EA50F39}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.Model", "RadXAutomat.Model\RadXAutomat.Model.csproj", "{CFC9B63B-7449-4FB2-85ED-F93B83E6CC77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D5D235EC-8D54-459D-8FBE-FD104EA50F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5D235EC-8D54-459D-8FBE-FD104EA50F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5D235EC-8D54-459D-8FBE-FD104EA50F39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFC9B63B-7449-4FB2-85ED-F93B83E6CC77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFC9B63B-7449-4FB2-85ED-F93B83E6CC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFC9B63B-7449-4FB2-85ED-F93B83E6CC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFC9B63B-7449-4FB2-85ED-F93B83E6CC77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

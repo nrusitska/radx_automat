@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataManager.cs" />
+    <Compile Include="IniFile.cs" />
     <Compile Include="NFCDongle.cs" />
     <Compile Include="NFCDongleRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
