@@ -22,7 +22,7 @@ namespace RadXAutomat.Ui
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int FlashAnimationDur = 2;
+        const int FlashAnimationDur = 3;
         const int ScrollAnimationDur = 5;
         public MainWindow()
         {
@@ -88,7 +88,10 @@ namespace RadXAutomat.Ui
 
         void DoCodeAnimation()
         {
-            
+            _codeAnimationArea.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    _codeAnimationArea.Background = Brushes.Black;
+                }));
             DateTime end = DateTime.Now + TimeSpan.FromSeconds(ScrollAnimationDur);
             while (_scroller.VerticalOffset < _scroller.ScrollableHeight && DateTime.Now < end) 
             {

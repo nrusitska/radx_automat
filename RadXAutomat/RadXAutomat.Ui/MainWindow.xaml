@@ -17,9 +17,9 @@
         <Grid Background="Black" x:Name="_codeAnimationArea">
             <Grid.OpacityMask>
                 <VisualBrush               
-              TileMode="Tile" Viewport="0,0,40,50" 
-              ViewportUnits="Absolute" Viewbox="0,0,10,10"    
-              ViewboxUnits="Absolute">
+                  TileMode="Tile" Viewport="0,0,40,50" 
+                  ViewportUnits="Absolute" Viewbox="0,0,10,10"    
+                  ViewboxUnits="Absolute">
                     <VisualBrush.Visual>
                         <Canvas>
                             <Path Stroke="Black" StrokeThickness="12" Data="M 0 10 l 10 0" />
@@ -31,7 +31,7 @@
                 HorizontalAlignment="Center"
                 x:Name="_scroller" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
                 <TextBlock
-                FontFamily="Courier New" FontWeight="ExtraBold" FontSize="16"
+                FontFamily="Courier New" FontWeight="ExtraBold" FontSize="20"
                 Padding="5"  Foreground="Green" x:Name="_codeBlock"
                     >Das ist ein Test</TextBlock>
         </ScrollViewer>

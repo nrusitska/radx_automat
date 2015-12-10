@@ -1,31 +1,4 @@
-﻿/*
- *	linux/kernel/resource.c
- *
- * Copyright (C) 1999	Linus Torvalds
- * Copyright (C) 1999	Martin Mares <mj@ucw.cz>
- *
- * Arbitrary resource management.
- */
-
-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-
-#include <linux/export.h>
-#include <linux/errno.h>
-#include <linux/ioport.h>
-#include <linux/init.h>
-#include <linux/slab.h>
-#include <linux/spinlock.h>
-#include <linux/fs.h>
-#include <linux/proc_fs.h>
-#include <linux/sched.h>
-#include <linux/seq_file.h>
-#include <linux/device.h>
-#include <linux/pfn.h>
-#include <linux/mm.h>
-#include <linux/resource_ext.h>
-#include <asm/io.h>
-
-
+﻿
 struct resource ioport_resource = {
 	.name	= "PCI IO",
 	.start	= 0,
