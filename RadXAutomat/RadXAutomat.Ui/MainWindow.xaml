@@ -1,0 +1,45 @@
+﻿<Window x:Class="RadXAutomat.Ui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RadXAutomat.Ui"
+        mc:Ignorable="d"
+        WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="/RadXAutomat.Ui;component/#8BIT WONDER Nominal"
+        Loaded="Window_Loaded"
+        Title="MainWindow" 
+        WindowState="Maximized"
+        
+        >
+    <Grid >
+        <Grid Background="Black" x:Name="_codeAnimationArea">
+            <Grid.OpacityMask>
+                <VisualBrush               
+              TileMode="Tile" Viewport="0,0,40,50" 
+              ViewportUnits="Absolute" Viewbox="0,0,10,10"    
+              ViewboxUnits="Absolute">
+                    <VisualBrush.Visual>
+                        <Canvas>
+                            <Path Stroke="Black" StrokeThickness="12" Data="M 0 10 l 10 0" />
+                        </Canvas>
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Grid.OpacityMask>
+            <ScrollViewer 
+                HorizontalAlignment="Center"
+                x:Name="_scroller" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
+                <TextBlock
+                FontFamily="Courier New" FontWeight="ExtraBold" FontSize="16"
+                Padding="5"  Foreground="Green" x:Name="_codeBlock"
+                    >Das ist ein Test</TextBlock>
+        </ScrollViewer>
+        </Grid>
+        <Grid x:Name="_content" Visibility="Hidden" Background="Black">
+            <Image Source="star.png" 
+             RenderOptions.BitmapScalingMode="NearestNeighbor"
+            ></Image>
+        </Grid>
+    </Grid>
+</Window>
