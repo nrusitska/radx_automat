@@ -23,7 +23,8 @@ namespace RadXAutomat.Ui
     public partial class MainWindow : Window
     {
         const int FlashAnimationDur = 3;
-        const int ScrollAnimationDur = 5;
+        const int ScrollAnimationDur = 7;
+        const int ScrollPixelSteps = 175;
         public MainWindow()
         {
             InitializeComponent();
@@ -97,7 +98,7 @@ namespace RadXAutomat.Ui
             {
                 _scroller.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    _scroller.ScrollToVerticalOffset(_scroller.VerticalOffset + 125);
+                    _scroller.ScrollToVerticalOffset(_scroller.VerticalOffset + ScrollPixelSteps);
                 }));
                 Thread.Sleep(10);
             }
