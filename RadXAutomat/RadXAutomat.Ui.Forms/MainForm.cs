@@ -41,15 +41,16 @@ namespace RadXAutomat.Ui.Forms
 
         void StartupAnimations()
         {
-             DoOpacityAnimation();
-             DoCodeAnimation();
-//             DisplayContent();
+            DoOpacityAnimation();
+            DoCodeAnimation();
+            DisplayContent();
         }
         private void MainForm_Shown(object sender, EventArgs e)
         {
             
             var thr = new Thread(StartupAnimations);
             thr.Start();
+            //BeginInvoke(new Action(StartupAnimations));
         }
 
         void DoOpacityAnimation()
@@ -57,6 +58,7 @@ namespace RadXAutomat.Ui.Forms
             var rnd = new Random();
             var dur = TimeSpan.FromSeconds(FlashAnimationDur);
             var animationEnd = DateTime.Now + dur;
+            var img = hackPanel.BackgroundImage;
             while (DateTime.Now < animationEnd)
             {
                 var rest = (animationEnd - DateTime.Now);
@@ -66,42 +68,53 @@ namespace RadXAutomat.Ui.Forms
                 {
                     Invoke(new Action(() =>
                     {
-                        hackPanel.Visible = true;
-
+                        hackPanel.BackgroundImage = img;
+                        hackPanel.Update();
                     }));
 
                 }
                 else
                     Invoke(new Action(() =>
                     {
-                        hackPanel.Visible = false;
+                        hackPanel.BackgroundImage = null;
+                        hackPanel.Update();
                     }));
                 Thread.Sleep(52);
             }
-            Invoke(new Action(() =>
+            BeginInvoke(new Action(() =>
             {
-                hackPanel.BackgroundImage.Dispose();
-                hackPanel.BackgroundImage = null;
+                //hackPanel.BackgroundImage.Dispose();
                 hackPanel.BackColor = Color.Black;
+                hackPanel.BackgroundImage = null;
+                img.Dispose();
+                hackPanel.Update();
             }));
         }
 
         void DisplayContent()
         {
-            Invoke(new Action(() =>
+            BeginInvoke(new Action(() =>
             {
                 hackPanel.Visible = false;
+                hackPanel.PerformLayout();
             }));
         }
 
         void DoCodeAnimation()
         {
+            Invoke(new Action(() =>
+            {
+                hackPanel.AutoScroll = true;
+                hackPanel.VerticalScroll.Visible = false;
+                hackPanel.PerformLayout();
+            }));
             DateTime end = DateTime.Now + TimeSpan.FromSeconds(ScrollAnimationDur);
             while (hackPanel.VerticalScroll.Value < hackPanel.VerticalScroll.Maximum && DateTime.Now < end)
             {
                 Invoke(new Action(() =>
                 {
-                    hackPanel.VerticalScroll.Value = Math.Min(hackPanel.VerticalScroll.Maximum, hackPanel.VerticalScroll.Value + ScrollPixelSteps);                    
+                    hackPanel.VerticalScroll.Value = Math.Min(hackPanel.VerticalScroll.Maximum, hackPanel.VerticalScroll.Value + ScrollPixelSteps);
+                    hackPanel.PerformLayout();
                 }));
                 Thread.Sleep(10);
             }

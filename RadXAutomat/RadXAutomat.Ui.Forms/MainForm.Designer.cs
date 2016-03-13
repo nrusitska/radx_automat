@@ -51,13 +51,17 @@
             // 
             // hackPanel
             // 
+            this.hackPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.hackPanel.BackColor = System.Drawing.Color.Transparent;
             this.hackPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("hackPanel.BackgroundImage")));
             this.hackPanel.Controls.Add(this.hackTextPanel);
-            this.hackPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.hackPanel.ForeColor = System.Drawing.SystemColors.Control;
             this.hackPanel.Location = new System.Drawing.Point(0, 0);
+            this.hackPanel.Margin = new System.Windows.Forms.Padding(0);
             this.hackPanel.Name = "hackPanel";
-            this.hackPanel.Size = new System.Drawing.Size(771, 438);
+            this.hackPanel.Size = new System.Drawing.Size(819, 438);
             this.hackPanel.TabIndex = 1;
             // 
             // MainForm
