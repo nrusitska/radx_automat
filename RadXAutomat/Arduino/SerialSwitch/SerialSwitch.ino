@@ -31,15 +31,15 @@ void loop()
 {
   for(int i=0;i<inputs_length;i++)
   {
-    int state = 1-digitalRead(inputs[i].pos);
+    int state = digitalRead(inputs[i].pos);
     if(DEBUG)
       digitalWrite(i, state);
     //entprelen
-    if((state != inputs[i].state))
-    {
-      delay(10);
-      state = 1-digitalRead(inputs[i].pos);
-    }
+//    if((state != inputs[i].state))
+//    {
+//      delay(2);
+//      state = digitalRead(inputs[i].pos);
+//    }
     //Änderung per Serial raussenden.
     if((state != inputs[i].state))
     {

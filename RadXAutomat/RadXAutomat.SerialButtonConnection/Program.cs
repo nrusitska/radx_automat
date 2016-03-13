@@ -20,11 +20,11 @@ namespace RadXAutomat.SerialButtonConnection
 
         private static void Con_ButtonChanged(int button, bool state)
         {
-            var key = Key.LWin;
+            var key = Key.A;
             Console.WriteLine(button + ": " + state);
 
-            uint winstate = (uint)(state ? 0 : 2);//0==key down, 2 == key-up
-            keybd_event((byte)KeyInterop.VirtualKeyFromKey(key), 0, winstate, 0);
+             uint winstate = (uint)(state ? 0 : 2);//0==key down, 2 == key-up
+             keybd_event((byte)KeyInterop.VirtualKeyFromKey(key), 0, winstate, 0);
         }
 
         [DllImport("user32.dll")]
