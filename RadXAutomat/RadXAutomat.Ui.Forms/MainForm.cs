@@ -27,6 +27,7 @@ namespace RadXAutomat.Ui.Forms
             hackPanel.AutoScrollPosition = new Point();
             hackPanel.VerticalScroll.Maximum = hackTextPanel.PreferredHeight;
             hackPanel.VerticalScroll.Visible = false;
+            KeyPress += MainForm_KeyPress;
 
         }
         void StartupAnimations()
@@ -37,10 +38,14 @@ namespace RadXAutomat.Ui.Forms
         }
         private void MainForm_Shown(object sender, EventArgs e)
         {
-
-
+            
             var thr = new Thread(StartupAnimations);
             thr.Start();
+        }
+
+        private void MainForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            Keys.   
         }
 
         void DoOpacityAnimation()
