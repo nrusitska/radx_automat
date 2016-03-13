@@ -18,6 +18,8 @@ namespace RadXAutomat.Ui.Forms
         const int ScrollAnimationDur = 7;
         const int ScrollPixelSteps = 175;
 
+        private KeyHandler _keyHandler;
+
         public MainForm()
         {
             InitializeComponent();
@@ -27,9 +29,16 @@ namespace RadXAutomat.Ui.Forms
             hackPanel.AutoScrollPosition = new Point();
             hackPanel.VerticalScroll.Maximum = hackTextPanel.PreferredHeight;
             hackPanel.VerticalScroll.Visible = false;
-            KeyPress += MainForm_KeyPress;
+            _keyHandler = new KeyHandler(this);
+            this.KeyUp += MainForm_KeyUp;
 
         }
+
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            _keyHandler.HandleKey((int)e.KeyCode);
+        }
+
         void StartupAnimations()
         {
              DoOpacityAnimation();
@@ -41,11 +50,6 @@ namespace RadXAutomat.Ui.Forms
             
             var thr = new Thread(StartupAnimations);
             thr.Start();
-        }
-
-        private void MainForm_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            Keys.   
         }
 
         void DoOpacityAnimation()

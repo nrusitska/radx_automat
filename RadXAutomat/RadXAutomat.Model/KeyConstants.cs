@@ -8,24 +8,24 @@ namespace RadXAutomat.Model
 {
     public class KeyConstants
     {
-        int UP = (int)Keys.Up;
-        int DOWN = (int)Keys.Down;
-        int LEFT = (int)Keys.Left;
-        int RIGHT = (int)Keys.Right;
+        public const int UP = (int)Keys.Up;
+        public const int DOWN = (int)Keys.Down;
+        public const int LEFT = (int)Keys.Left;
+        public const int RIGHT = (int)Keys.Right;
 
-        int FUNC_A = (int)Keys.A;
-        int FUNC_B = (int)Keys.B;
-        int FUNC_C = (int)Keys.C;
-        int FUNC_D = (int)Keys.D;
-        int FUNC_COIN_RAD = (int)Keys.E;
+        public const int FUNC_A = (int)Keys.A;
+        public const int FUNC_B = (int)Keys.B;
+        public const int FUNC_C = (int)Keys.C;
+        public const int FUNC_D = (int)Keys.D;
+        public const int FUNC_COIN_RAD = (int)Keys.E;
 
-        int LOCK_1 = (int)Keys.D1;
-        int LOCK_2 = (int)Keys.D2;
+        public const int LOCK_1 = (int)Keys.D1;
+        public const int LOCK_2 = (int)Keys.D2;
 
-        int GAME_1 = (int)Keys.NumPad1;
-        int GAME_2 = (int)Keys.NumPad2;
-        int GAME_3 = (int)Keys.NumPad3;
-        int GAME_CLEAR = (int)Keys.NumPad0;
+        public const int GAME_1 = (int)Keys.NumPad1;
+        public const int GAME_2 = (int)Keys.NumPad2;
+        public const int GAME_3 = (int)Keys.NumPad3;
+        public const int GAME_CLEAR = (int)Keys.Escape;
 
     }
 }
