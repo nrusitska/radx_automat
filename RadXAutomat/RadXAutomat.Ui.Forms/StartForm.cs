@@ -12,15 +12,13 @@ using System.Windows.Forms;
 
 namespace RadXAutomat.Ui.Forms
 {
-    public partial class MainForm : Form
+    public partial class StartForm : Form
     {
         const int FlashAnimationDur = 3;
         const int ScrollAnimationDur = 7;
         const int ScrollPixelSteps = 175;
 
-        private KeyHandler _keyHandler;
-
-        public MainForm()
+        public StartForm()
         {
             InitializeComponent();
             string source = File.ReadAllText("kernel.resource.c.txt");
@@ -29,15 +27,7 @@ namespace RadXAutomat.Ui.Forms
             hackPanel.AutoScrollPosition = new Point();
             hackPanel.VerticalScroll.Maximum = hackTextPanel.PreferredHeight;
             hackPanel.VerticalScroll.Visible = false;
-            hackPanel.Visible = false;
-            _keyHandler = new KeyHandler(this);
-            this.KeyUp += MainForm_KeyUp;
-
-        }
-
-        private void MainForm_KeyUp(object sender, KeyEventArgs e)
-        {
-            _keyHandler.HandleKey((int)e.KeyCode);
+            hackPanel.Visible = false;            
         }
 
         void StartupAnimations()
@@ -99,10 +89,13 @@ namespace RadXAutomat.Ui.Forms
 
         void DisplayContent()
         {
-            BeginInvoke(new Action(() =>
+            Invoke(new Action(() =>
             {
-                hackPanel.Visible = false;
-                hackPanel.PerformLayout();
+                Close();
+//                 var form = new RadXMainForm();
+//                 form.Shown += (s,a) => { this.Close(); };
+//                 BeginInvoke(new Action(()=>form.ShowDialog()));
+//                 
             }));
         }
 

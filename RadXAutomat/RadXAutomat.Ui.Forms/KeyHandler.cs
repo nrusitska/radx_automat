@@ -9,8 +9,8 @@ namespace RadXAutomat.Ui.Forms
 {
     public class KeyHandler
     {
-        private MainForm _mainForm;
-        public KeyHandler(MainForm form)
+        private RadXMainForm _mainForm;
+        public KeyHandler(RadXMainForm form)
         {
             _mainForm = form;
         }
