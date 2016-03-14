@@ -31,6 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.hackTextPanel = new System.Windows.Forms.Label();
             this.hackPanel = new System.Windows.Forms.Panel();
+            this.skullPanel = new System.Windows.Forms.Panel();
             this.hackPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -42,7 +43,7 @@
             this.hackTextPanel.BackColor = System.Drawing.Color.Transparent;
             this.hackTextPanel.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.hackTextPanel.ForeColor = System.Drawing.Color.Green;
-            this.hackTextPanel.Location = new System.Drawing.Point(0, 0);
+            this.hackTextPanel.Location = new System.Drawing.Point(9, 491);
             this.hackTextPanel.Margin = new System.Windows.Forms.Padding(0);
             this.hackTextPanel.Name = "hackTextPanel";
             this.hackTextPanel.Size = new System.Drawing.Size(348, 27);
@@ -56,13 +57,26 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.hackPanel.BackColor = System.Drawing.Color.Transparent;
             this.hackPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("hackPanel.BackgroundImage")));
+            this.hackPanel.Controls.Add(this.skullPanel);
             this.hackPanel.Controls.Add(this.hackTextPanel);
             this.hackPanel.ForeColor = System.Drawing.SystemColors.Control;
             this.hackPanel.Location = new System.Drawing.Point(0, 0);
             this.hackPanel.Margin = new System.Windows.Forms.Padding(0);
             this.hackPanel.Name = "hackPanel";
-            this.hackPanel.Size = new System.Drawing.Size(819, 438);
+            this.hackPanel.Size = new System.Drawing.Size(1448, 800);
             this.hackPanel.TabIndex = 1;
+            // 
+            // skullPanel
+            // 
+            this.skullPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.skullPanel.BackColor = System.Drawing.Color.Transparent;
+            this.skullPanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("skullPanel.BackgroundImage")));
+            this.skullPanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.skullPanel.Location = new System.Drawing.Point(541, 12);
+            this.skullPanel.Name = "skullPanel";
+            this.skullPanel.Size = new System.Drawing.Size(357, 743);
+            this.skullPanel.TabIndex = 1;
             // 
             // MainForm
             // 
@@ -71,7 +85,7 @@
             this.BackColor = System.Drawing.Color.Black;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.ClientSize = new System.Drawing.Size(771, 438);
+            this.ClientSize = new System.Drawing.Size(1400, 800);
             this.Controls.Add(this.hackPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
@@ -90,6 +104,7 @@
 
         private System.Windows.Forms.Label hackTextPanel;
         private System.Windows.Forms.Panel hackPanel;
+        private System.Windows.Forms.Panel skullPanel;
     }
 }
 

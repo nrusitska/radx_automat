@@ -29,6 +29,7 @@ namespace RadXAutomat.Ui.Forms
             hackPanel.AutoScrollPosition = new Point();
             hackPanel.VerticalScroll.Maximum = hackTextPanel.PreferredHeight;
             hackPanel.VerticalScroll.Visible = false;
+            hackPanel.Visible = false;
             _keyHandler = new KeyHandler(this);
             this.KeyUp += MainForm_KeyUp;
 
@@ -55,6 +56,11 @@ namespace RadXAutomat.Ui.Forms
 
         void DoOpacityAnimation()
         {
+            Invoke(new Action(() =>
+            {
+                hackPanel.Visible = true;
+                hackPanel.Update();
+            }));
             var rnd = new Random();
             var dur = TimeSpan.FromSeconds(FlashAnimationDur);
             var animationEnd = DateTime.Now + dur;
