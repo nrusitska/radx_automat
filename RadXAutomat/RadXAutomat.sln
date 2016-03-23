@@ -26,6 +26,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SerialSwitch", "SerialSwitc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.Ui.Forms", "RadXAutomat.Ui.Forms\RadXAutomat.Ui.Forms.csproj", "{CECFCF52-14E6-4B7F-86CC-4EBAA3E10E7A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rdParty", "3rdParty", "{CF620816-15D4-4743-A3DC-A62620098C99}"
+	ProjectSection(SolutionItems) = preProject
+		3rdParty\DeskIDWrapper.dll = 3rdParty\DeskIDWrapper.dll
+		3rdParty\RadBoyBusinessLogic.dll = 3rdParty\RadBoyBusinessLogic.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
