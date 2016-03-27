@@ -32,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3rdParty", "3rdParty", "{CF
 		3rdParty\RadBoyBusinessLogic.dll = 3rdParty\RadBoyBusinessLogic.dll
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.NfcDongle", "RadXAutomat.NfcDongle\RadXAutomat.NfcDongle.csproj", "{37F623BD-04A3-4517-B400-B810624A768C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RadXAutomat.TestUi", "RadXAutomat.TestUi\RadXAutomat.TestUi.csproj", "{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +108,22 @@ Global
 		{CECFCF52-14E6-4B7F-86CC-4EBAA3E10E7A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CECFCF52-14E6-4B7F-86CC-4EBAA3E10E7A}.Release|x86.ActiveCfg = Release|Any CPU
 		{CECFCF52-14E6-4B7F-86CC-4EBAA3E10E7A}.Release|x86.Build.0 = Release|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Debug|x86.Build.0 = Debug|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Release|x86.ActiveCfg = Release|Any CPU
+		{37F623BD-04A3-4517-B400-B810624A768C}.Release|x86.Build.0 = Release|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Debug|x86.Build.0 = Debug|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Release|x86.ActiveCfg = Release|Any CPU
+		{D3C47F51-4BCF-4FBA-9E59-779CA5C85B11}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
