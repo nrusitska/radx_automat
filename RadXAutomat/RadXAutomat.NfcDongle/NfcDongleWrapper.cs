@@ -66,7 +66,7 @@ namespace RadXAutomat.NfcDongle
 
         public int GetRads()
         {
-            return _api.CalculateCurrentRads();
+            return _api.CalculateCurrentMilliRads();
         }
         public int GetMilliRads()
         {
