@@ -1,0 +1,35 @@
+﻿<Window x:Class="RadXAutomat.Ui.RadXMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RadXAutomat.Ui"
+        mc:Ignorable="d" WindowStyle="None" BorderThickness="0" WindowState="Maximized"
+        Title="RadXMainWindow" Height="810" Width="1440"
+        FontFamily="Courier New"
+        Foreground="Green"
+        Background="Black"
+        ContentRendered="Window_ContentRendered" FontSize="24" FontWeight="Bold"
+        PreviewKeyUp="Window_PreviewKeyUp"
+        >
+    <!-- FontFamily="/RadXAutomat.Ui;component/#8BIT WONDER Nominal" -->
+    <Grid>
+        <Image Source="Resources/Football.jpg" ></Image>
+        <Grid>
+            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black" Padding="10">
+            <Border BorderBrush="Green" BorderThickness="4" Padding="10" Width="900" Height="500">
+                    <Label Foreground="Green">
+                        <TextBlock TextWrapping="Wrap">
+                            <TextBlock Name="_consoleContent" TextWrapping="Wrap">Welcome to RadBoy</TextBlock>
+                            <LineBreak></LineBreak>
+                            <TextBlock>
+                                <Run Name="_consolePreCursor">/#&gt;</Run>
+                                <Run Name="_consoleInputContent"></Run><TextBlock Name ="_consolePostCursor" Text=" " Background="Green"   />
+                                </TextBlock>
+                        </TextBlock>
+                    </Label>
+            </Border>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

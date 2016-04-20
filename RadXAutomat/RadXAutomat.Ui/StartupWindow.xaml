@@ -1,4 +1,4 @@
-﻿<Window x:Class="RadXAutomat.Ui.MainWindow"
+﻿<Window x:Class="RadXAutomat.Ui.StartupWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -9,7 +9,7 @@
         Background="Transparent"
         FontFamily="/RadXAutomat.Ui;component/#8BIT WONDER Nominal"
         Loaded="Window_Loaded"
-        Title="MainWindow" 
+        Title="StartupWindow" 
         WindowState="Maximized"
         
         >
@@ -30,11 +30,14 @@
             <ScrollViewer 
                 HorizontalAlignment="Center"
                 x:Name="_scroller" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden">
-                <TextBlock
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+                    <Image Source="Resources/skull.gif" />
+                    <TextBlock
                 FontFamily="Courier New" FontWeight="ExtraBold" FontSize="20"
                 Padding="5"  Foreground="Green" x:Name="_codeBlock"
                     >Das ist ein Test</TextBlock>
-        </ScrollViewer>
+                </StackPanel>
+            </ScrollViewer>
         </Grid>
         <Grid x:Name="_content" Visibility="Hidden" Background="Black">
             <Image Source="star.png" 

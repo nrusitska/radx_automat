@@ -20,12 +20,12 @@ namespace RadXAutomat.Ui
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class StartupWindow : Window
     {
         const int FlashAnimationDur = 3;
         const int ScrollAnimationDur = 7;
-        const int ScrollPixelSteps = 175;
-        public MainWindow()
+        const int ScrollPixelSteps = 100;
+        public StartupWindow()
         {
             InitializeComponent();
             string source = File.ReadAllText("kernel.resource.c.txt");
@@ -82,8 +82,10 @@ namespace RadXAutomat.Ui
         void DisplayContent()
         {
             Dispatcher.BeginInvoke(new Action(() => {
-                _content.Visibility = Visibility.Visible;
+                //_content.Visibility = Visibility.Visible;
                 _codeAnimationArea.Visibility = Visibility.Hidden;
+                var wnd = new RadXMainWindow() { Owner = this };
+                wnd.ShowDialog();
             }));
         }
 

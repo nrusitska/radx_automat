@@ -53,7 +53,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="RadXMainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StartupWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -61,8 +65,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="RadXInteractionModel.cs" />
+    <Compile Include="RadXMainWindow.xaml.cs">
+      <DependentUpon>RadXMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StartupWindow.xaml.cs">
+      <DependentUpon>StartupWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -100,6 +108,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\skull.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Football.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RadXAutomat.Model\RadXAutomat.Model.csproj">
+      <Project>{cfc9b63b-7449-4fb2-85ed-f93b83e6cc77}</Project>
+      <Name>RadXAutomat.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
