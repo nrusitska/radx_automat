@@ -123,7 +123,23 @@ namespace RadXAutomat.Ui
         {
             if(_model != null)
             {
-                _model.DoInput(e.Key);
+                _model.DoInput(e.Key, false);
+            }
+        }
+
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (_model != null)
+            {
+                _model.DoInput(e.Key, true);
+            }
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (_model != null)
+            {
+                _model.Dispose();
             }
         }
     }

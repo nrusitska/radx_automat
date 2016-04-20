@@ -1,4 +1,5 @@
 ﻿using RadXAutomat.Model;
+using RadXAutomat.NfcDongle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace RadXAutomat.Ui
 {
     public delegate void RadXWrite(string text);
 
-    public class RadXInteractionModel
+    public class RadXInteractionModel : IDisposable
     {
         enum ModelState
         {
@@ -24,8 +25,8 @@ namespace RadXAutomat.Ui
             ReadRads=3
         }
         const string LockMessage = "Na dann beweis mir mal, dass Du hier was zu melden hast!";
-        const string WelcomeMessage = "Alles klar Ödlaänder, dann leg mal Deine Hand auf, und wir schauen uns das mal an...";
-        const string DongleFoundMessage = "Ja, jetzt spür ich was...";
+        const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand auf, und wir schauen uns das mal an...";
+        const string DongleFoundMessage = "Ah, da bist Du ja.";
         const string DongleFoundMessage_Jack = "Na das Händchen erkenn ich doch! Ladies and Gentleman - Jack Bones is in the house!";
 
         const string ShowOptions = "Dann lass uns mal loslegen. Wenn Du RadX nehmen willst, kann es gleich losgehen.\n"
@@ -36,32 +37,53 @@ namespace RadXAutomat.Ui
 
         const string TakeRadXMessage = "Na dann mal rein mit dem guten Zeug!";
         const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt du wirklich bist...";
-        const string RadResultMessage_Green = "Alle Achtung, du bist so sauber, wie frisch aus dem Bunker!";
+        const string RadResultMessage_Green = "Alle Achtung! So sauber, wie frisch aus dem Bunker!";
         const string RadResultMessage_Yellow = "Du solltest langsam mal aufpassen, wo Du so rumläufst";
-        const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach wo anders hin, wo Du keinen verstahlen kannst.";
+        const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Dort wo Du keinen anderen verstahlen kannst.";
 
         public RadXWrite Write { get; set; }
         public RadXWrite WriteInput { get; set; }
         public Func<int,double> ShowRadsCountAnimation { get; set; }
 
         private ModelState _state;
-        private Action<int> _currentStateHandleKey;
+        private Action<int, bool> _currentStateHandleKey;
         private CommandOptions _currentCommand;
         private int _radXTakeCount = 0;
-        public void Start()
+        private NfcDongleWrapper _dongleConnector;
+        public RadXInteractionModel()
         {
-            ChangeState_Locked();
-
-            Demo();
+            _dongleConnector = new NfcDongleWrapper();
+            _dongleConnector.BeginSearch();
+            _dongleConnector.TagFound += _dongleConnector_TagFound;
+            _dongleConnector.TagLost += _dongleConnector_TagLost;
         }
 
-        public void DoInput(Key key)
+        private void _dongleConnector_TagLost(object sender, EventArgs e)
+        {
+            if(_state == ModelState.waitingForTakeoff || _state == ModelState.dongleReadySelectAction)
+                ChangeState_Waiting();
+        }
+
+        private void _dongleConnector_TagFound(object sender, string e)
+        {
+            if (_state == ModelState.waiting)
+                ChangeState_ReadyForAction();
+        }
+
+        public void Start()
+        {           
+            ChangeState_Locked();
+
+            //Demo();
+        }
+
+        public void DoInput(Key key, bool keyState)
         {
             var thread = new Thread(() =>
             {
-
+                HandleKey_CheckIfLocked((int)key, keyState);
                 if (_currentStateHandleKey != null)
-                    _currentStateHandleKey((int)key);
+                    _currentStateHandleKey((int)key, keyState);
 
             });
             thread.Start();
@@ -84,9 +106,42 @@ namespace RadXAutomat.Ui
         void ChangeState_Locked()
         {
             _state = ModelState.loked;
-            _currentStateHandleKey = null;
+            _currentStateHandleKey = HandleKey_LockedWaitForUnlock;
             Write(LockMessage);
+            lockKey1 = false;
+            lockKey2 = false;
+            lastLockTime = DateTime.MinValue;
         }
+        bool lockKey1, lockKey2;
+        DateTime lastLockTime = DateTime.MinValue;
+        TimeSpan unlockTimeout = TimeSpan.FromMilliseconds(700);
+        void HandleKey_LockedWaitForUnlock(int input, bool state)
+        {
+            if (input == KeyConstants.LOCK_1 && state)
+            {
+                lockKey1 = true;
+                if (lockKey2 && DateTime.Now < lastLockTime + unlockTimeout)
+                    ChangeState_Waiting();
+                else if (!lockKey2)
+                    lastLockTime = DateTime.Now;
+            }
+            else if (input == KeyConstants.LOCK_2 && state)
+            {
+                lockKey2 = true;
+                if (lockKey1 && DateTime.Now < lastLockTime + unlockTimeout)
+                    ChangeState_Waiting();
+                else if(state)
+                    lastLockTime = DateTime.Now;
+            }
+        }
+
+        void HandleKey_CheckIfLocked(int input, bool state)
+        {
+            if ( !state 
+                && (input == KeyConstants.LOCK_1 || input == KeyConstants.LOCK_2))
+                ChangeState_Locked();
+        }
+
         void ChangeState_Waiting()
         {
             _state = ModelState.waiting;
@@ -108,10 +163,12 @@ namespace RadXAutomat.Ui
             Write(DongleFoundMessage);
             Thread.Sleep(5000);
             Write(ShowOptions);
-            HandleKey_SelectAction(int.MinValue);
+            HandleKey_SelectAction(int.MinValue, false);
         }
-        void HandleKey_SelectAction(int input)
+        void HandleKey_SelectAction(int input, bool state)
         {
+            if (state)
+                return;
             if (input == KeyConstants.FUNC_D)
             {
                 DoCommandAction();
@@ -203,6 +260,11 @@ namespace RadXAutomat.Ui
             Write(TakeRadXMessage);
             Thread.Sleep(2000);
             ReadRads();
+        }
+
+        public void Dispose()
+        {
+            _dongleConnector.Close();
         }
     }
 }

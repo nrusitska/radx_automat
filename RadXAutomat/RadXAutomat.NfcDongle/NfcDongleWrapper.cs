@@ -12,10 +12,15 @@ namespace RadXAutomat.NfcDongle
     {
         const string WRITE_KEY = null;
         public event EventHandler<string> TagFound;
+        public event EventHandler TagLost;
         Thread _worker;
         bool _cancel;
         public bool IsTagConnected { get; private set; }
         RadApi _api;
+//         public void CancelSearch()
+//         {
+//             _cancel = true;
+//         }
         public void BeginSearch()
         {
             _cancel = false;
@@ -26,15 +31,15 @@ namespace RadXAutomat.NfcDongle
                 foundTag = list.First();
                 IsTagConnected = true;
                 Debug.WriteLine("tag found: " + foundTag.Id);
-                if(TagFound != null)
+                if(TagFound != null && !_cancel)
                     TagFound(this, foundTag.Id);
             };
             _api.NoTagFound += () => 
             {
                 IsTagConnected = false;
                 Debug.WriteLine("no tags found");
-                if (TagFound != null)
-                    TagFound(this, null);
+                if (TagLost != null && !_cancel)
+                    TagLost(this, null);
             };
             _worker = new Thread( ()=>
             {

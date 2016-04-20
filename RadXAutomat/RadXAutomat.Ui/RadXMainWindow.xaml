@@ -11,6 +11,8 @@
         Background="Black"
         ContentRendered="Window_ContentRendered" FontSize="24" FontWeight="Bold"
         PreviewKeyUp="Window_PreviewKeyUp"
+        PreviewKeyDown="Window_PreviewKeyDown"
+        Closed="Window_Closed"
         >
     <Window.Resources>
         <ResourceDictionary Source="Resources/ControlResources.xaml"></ResourceDictionary>
