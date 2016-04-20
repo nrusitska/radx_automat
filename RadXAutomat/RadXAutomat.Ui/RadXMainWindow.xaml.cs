@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -57,6 +58,37 @@ namespace RadXAutomat.Ui
             TypewriteTextblock(text, _consoleContent, dur);
         }
         RadXInteractionModel _model;
+
+        private double AnimateRadBar(int rads)
+        {
+            rads = (int)Math.Min(rads, _radProgrssBar.Maximum);
+            rads = (int)Math.Max(rads, _radProgrssBar.Minimum);
+            var milisPerRad = 12.5;
+            _radProgrssBar.Value = _radProgrssBar.Maximum;
+            _radProgrssBar.Opacity = 1;
+            var time = TimeSpan.FromMilliseconds(milisPerRad * rads);
+            var value = _radProgrssBar.Maximum - rads;
+            var dur = new Duration(time);
+            var ani = new DoubleAnimation(value, dur);
+            _radProgrssBar.BeginAnimation(ProgressBar.ValueProperty, ani);
+
+
+
+            var opaqAni = new DoubleAnimationUsingKeyFrames();
+
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
+            
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3000)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3300)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3600)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3900)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(4900)))));
+
+            _radProgrssBar.BeginAnimation(ProgressBar.OpacityProperty, opaqAni);
+            var sleeptime = time.TotalMilliseconds + 4900;
+            return sleeptime;
+        }
+
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             //Write("Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt. ");
@@ -68,6 +100,12 @@ namespace RadXAutomat.Ui
             _model.WriteInput = (string text) =>
             {
                 Dispatcher.BeginInvoke(new Action(() => { _consoleInputContent.Text = text; }));
+            };
+            _model.ShowRadsCountAnimation = (int rads) =>
+            {
+                double aniDur = 0;
+                Dispatcher.Invoke(new Action(() => { aniDur = AnimateRadBar(rads); }));
+                return aniDur;
             };
             _model.Start();
         }

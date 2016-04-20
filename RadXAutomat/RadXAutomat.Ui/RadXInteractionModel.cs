@@ -42,7 +42,7 @@ namespace RadXAutomat.Ui
 
         public RadXWrite Write { get; set; }
         public RadXWrite WriteInput { get; set; }
-        public Action<int> ShowRadsCountAnimation { get; set; }
+        public Func<int,double> ShowRadsCountAnimation { get; set; }
 
         private ModelState _state;
         private Action<int> _currentStateHandleKey;
@@ -167,7 +167,7 @@ namespace RadXAutomat.Ui
             int rads = 150;
             Thread.Sleep(2000); //TODO Messen
             if (ShowRadsCountAnimation != null)
-                ShowRadsCountAnimation(rads);
+                Thread.Sleep((int)ShowRadsCountAnimation(rads));
 
             //bis 100 grün, bis 200 gelb, dann rot
             if(rads <= 100) {

@@ -12,24 +12,35 @@
         ContentRendered="Window_ContentRendered" FontSize="24" FontWeight="Bold"
         PreviewKeyUp="Window_PreviewKeyUp"
         >
+    <Window.Resources>
+        <ResourceDictionary Source="Resources/ControlResources.xaml"></ResourceDictionary>
+    </Window.Resources>
     <!-- FontFamily="/RadXAutomat.Ui;component/#8BIT WONDER Nominal" -->
     <Grid>
         <Image Source="Resources/Football.jpg" ></Image>
         <Grid>
-            <Border VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black" Padding="10">
-            <Border BorderBrush="Green" BorderThickness="4" Padding="10" Width="900" Height="500">
-                    <Label Foreground="Green">
-                        <TextBlock TextWrapping="Wrap">
-                            <TextBlock Name="_consoleContent" TextWrapping="Wrap">Welcome to RadBoy</TextBlock>
-                            <LineBreak></LineBreak>
-                            <TextBlock>
-                                <Run Name="_consolePreCursor">/#&gt;</Run>
-                                <Run Name="_consoleInputContent"></Run><TextBlock Name ="_consolePostCursor" Text=" " Background="Green"   />
-                                </TextBlock>
-                        </TextBlock>
-                    </Label>
-            </Border>
-            </Border>
+            <Grid Width="900" Height="500" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                <Border Background="Black" Padding="10">
+                <Border BorderBrush="Green" BorderThickness="4" Padding="10" >
+                        <Label Foreground="Green">
+                            <TextBlock TextWrapping="Wrap">
+                                <TextBlock Name="_consoleContent" TextWrapping="Wrap">Welcome to RadBoy</TextBlock>
+                                <LineBreak></LineBreak>
+                                <TextBlock>
+                                    <Run Name="_consolePreCursor">/#&gt;</Run>
+                                    <Run Name="_consoleInputContent"></Run><TextBlock Name ="_consolePostCursor" Text=" " Background="Green"   />
+                                    </TextBlock>
+                            </TextBlock>
+                        </Label>
+                </Border>
+                </Border>
+            </Grid>
+            <ProgressBar Height="100" Width="1000"  Name="_radProgrssBar" Opacity="0"
+                         Minimum="0" Maximum="300" Value="300"  Style="{StaticResource RadXProgressBarStyle}">
+                   
+                </ProgressBar>
+
+
         </Grid>
     </Grid>
 </Window>
