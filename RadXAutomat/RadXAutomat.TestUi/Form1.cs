@@ -18,7 +18,18 @@ namespace RadXAutomat.TestUi
             InitializeComponent();
             _nfcWrapper = new NfcDongleWrapper();
             _nfcWrapper.TagFound += _nfcWrapper_TagFound;
+            _nfcWrapper.TagLost += _nfcWrapper_TagLost;
             _nfcWrapper.BeginSearch();
+        }
+
+        private void _nfcWrapper_TagLost(object sender, EventArgs e)
+        {
+            BeginInvoke(new Action(() =>
+            {
+                tagIdLabel.Text = "Kein Tag gefunden";
+                dongleGroupBox.Enabled = false;
+                radsLabel.Text = "";
+            }));
         }
 
         private void _nfcWrapper_TagFound(object sender, string id)
@@ -26,9 +37,7 @@ namespace RadXAutomat.TestUi
             BeginInvoke(new Action(()=> {
 
                 tagIdLabel.Text = "Tag: " + id;
-                dongleGroupBox.Enabled = false;
-                radsLabel.Text = "";
-                if(id != null)
+                if (id != null)
                 {
                     try
                     {
