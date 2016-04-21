@@ -24,6 +24,12 @@ namespace RadXAutomat.Ui
             RadAway=2,
             ReadRads=3
         }
+
+#if DEBUG
+        const bool IS_DEMO = false;
+#else
+        const bool IS_DEMO = false;
+#endif 
         const string LockMessage = "Na dann beweis mir mal, dass Du hier was zu melden hast!";
         const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand auf, und wir schauen uns das mal an...";
         const string DongleFoundMessage = "Ah, da bist Du ja.";
@@ -107,6 +113,7 @@ namespace RadXAutomat.Ui
         {
             _state = ModelState.loked;
             _currentStateHandleKey = HandleKey_LockedWaitForUnlock;
+            WriteInput("");
             Write(LockMessage);
             lockKey1 = false;
             lockKey2 = false;
@@ -145,13 +152,20 @@ namespace RadXAutomat.Ui
         void ChangeState_Waiting()
         {
             _state = ModelState.waiting;
-            _currentStateHandleKey = null;
+            if(IS_DEMO)
+            {
+                _currentStateHandleKey = (k, s) => { if (k == 37 && s) ChangeState_ReadyForAction(); };
+            }
+            else
+                _currentStateHandleKey = null;
+            WriteInput("");
             Write(WelcomeMessage);
         }
         void ChangeState_WaitForTakeoff()
         {
             _state = ModelState.waitingForTakeoff;
             _currentStateHandleKey = null;
+            WriteInput("");
             Write(WaitForTakeoffMessage);
         }
 
@@ -221,8 +235,14 @@ namespace RadXAutomat.Ui
         private void ReadRads()
         {
             Write(ReadRadsMessage);
-            int rads = 150;
-            Thread.Sleep(2000); //TODO Messen
+            int rads = 0;
+            if (IS_DEMO)
+            { 
+                Thread.Sleep(2000);
+                rads = 150;
+            }
+            else
+                rads = _dongleConnector.GetRads();
             if (ShowRadsCountAnimation != null)
                 Thread.Sleep((int)ShowRadsCountAnimation(rads));
 
@@ -244,21 +264,30 @@ namespace RadXAutomat.Ui
         private void TakeRadAway()
         {
             Write(TakeRadXMessage);
-            Thread.Sleep(2000);
+            if (IS_DEMO)
+                Thread.Sleep(2000);
+            else
+                _dongleConnector.TakeRadAway();
             ReadRads();
         }
 
         private void TakePureLive()
         {
             Write(TakeRadXMessage);
-            Thread.Sleep(2000);
+            if (IS_DEMO)
+                Thread.Sleep(2000);
+            else
+                _dongleConnector.TakePureLife();
             ReadRads();
         }
 
         private void TakeRadX(int _radXTakeCount)
         {
             Write(TakeRadXMessage);
-            Thread.Sleep(2000);
+            if (IS_DEMO)
+                Thread.Sleep(2000);
+            else
+                _dongleConnector.TakeRadX(_radXTakeCount);
             ReadRads();
         }
 

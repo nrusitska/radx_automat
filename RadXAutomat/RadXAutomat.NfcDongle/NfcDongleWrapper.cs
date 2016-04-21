@@ -1,4 +1,5 @@
 ﻿using RadBoyBusinessLogic;
+using RadBoyBusinessLogic.API.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,6 +22,11 @@ namespace RadXAutomat.NfcDongle
 //         {
 //             _cancel = true;
 //         }
+        void RaiseTagNotFound()
+        {
+            if (TagLost != null && !_cancel)
+                TagLost(this, null);
+        }
         public void BeginSearch()
         {
             _cancel = false;
@@ -38,8 +44,7 @@ namespace RadXAutomat.NfcDongle
             {
                 IsTagConnected = false;
                 Debug.WriteLine("no tags found");
-                if (TagLost != null && !_cancel)
-                    TagLost(this, null);
+                RaiseTagNotFound();
             };
             _worker = new Thread( ()=>
             {
@@ -48,11 +53,29 @@ namespace RadXAutomat.NfcDongle
                     while (!_cancel)
                     {
                         var task = _api.FindTags();
-                        var cont = task.ContinueWith(t => { System.Diagnostics.Debug.WriteLine(t.Status); });
+                        var cont = task.ContinueWith(t => { System.Diagnostics.Debug.WriteLine("task1 "+t.Status); });
                         cont.Wait();
+                        cont.Dispose();
+                        task.Dispose();
                         Debug.WriteLine("tag task completed.");
+                        Thread.Sleep(500);
                         while (IsTagConnected)
-                            Thread.Sleep(50);
+                        {
+                            //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
+                            //immer wieder _api.GetWrittenMilliRads() uafrufen, bis eine Exception kommt, weil das Tag weg ist...
+                            // nicht schön, aber es geht wohl nicht anders...
+                            try
+                            {
+                                Thread.Sleep(10);
+                                _api.GetWrittenMilliRads();//wirft unterschiedliche Exceptions, wenn das Tag weg ist.
+                            }
+                            catch(Exception ex)
+                            {
+                                Debug.WriteLine(ex.ToString());
+                                break;
+                            }
+                        }
+                            
                         Debug.WriteLine("tag disconnected - restarting search.");
                     }
                 }
@@ -71,31 +94,88 @@ namespace RadXAutomat.NfcDongle
 
         public int GetRads()
         {
-            return _api.CalculateCurrentMilliRads();
+            try
+            {
+#if DEBUG
+                return _api.GetWrittenMilliRads() / 1000;
+#else
+                return _api.CalculateCurrentMilliRads() / 1000;
+#endif
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+                return -1;
+            }
+
+
         }
         public int GetMilliRads()
         {
-            return _api.GetWrittenMilliRads();
+            try
+            { 
+                return _api.GetWrittenMilliRads();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+                return -1;
+            }
         }
 
         public void TakeRadX(int count)
         {
-            _api.TakeRadEx(count);
+            try
+            {
+                _api.TakeRadEx(count);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+            }
         }
 
         public void TakeRadAway()
         {
-            _api.TakeRadAway();
+            try
+            {
+                _api.TakeRadAway();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+            }
         }
 
         public void TakePureLife()
         {
-            _api.TakePureLife();
+            try
+            {
+                _api.TakePureLife();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+            }
         }
 
         public void DoDecon()
         {
-            _api.DoDecon();
+            try
+            {
+                _api.DoDecon();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                RaiseTagNotFound();
+            }
         }
 
         
