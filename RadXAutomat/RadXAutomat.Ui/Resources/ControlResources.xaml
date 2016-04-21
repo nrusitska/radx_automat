@@ -35,14 +35,16 @@
                             </Border.OpacityMask>
 
                         </Border>
-                        <Border 
-                                    Name="PART_Indicator" 
-                                    CornerRadius="2" 
-                                    Background="Black" 
-                                    BorderBrush="Transparent" 
-                                    BorderThickness="1" 
-                                    HorizontalAlignment="Right" />
-                    </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                        <ColumnDefinition Width="*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Name="PART_Indicator" />
+                                    <Border Background="Black" Grid.Column="1" />
+                                </Grid>
+                            </Grid>
                         </Border>
                     </Grid>
                 </ControlTemplate>

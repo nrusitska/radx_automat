@@ -66,19 +66,22 @@ namespace RadXAutomat.Ui
 
         private void _dongleConnector_TagLost(object sender, EventArgs e)
         {
-            if(_state == ModelState.waitingForTakeoff || _state == ModelState.dongleReadySelectAction)
+            if(!IS_DEMO && _state == ModelState.waitingForTakeoff || _state == ModelState.dongleReadySelectAction)
                 ChangeState_Waiting();
         }
 
         private void _dongleConnector_TagFound(object sender, string e)
         {
-            if (_state == ModelState.waiting)
+            if (!IS_DEMO && _state == ModelState.waiting)
                 ChangeState_ReadyForAction();
         }
 
         public void Start()
         {           
-            ChangeState_Locked();
+            if(IS_DEMO)
+                Demo();
+            else
+                ChangeState_Locked();
 
             //Demo();
         }
@@ -98,12 +101,12 @@ namespace RadXAutomat.Ui
         void Demo()
         {
             var thread = new Thread(() => {
-                
-                Thread.Sleep(4000);
-                ChangeState_Waiting();
-                Thread.Sleep(5000);
-                ChangeState_ReadyForAction();
 
+                //                 Thread.Sleep(4000);
+                //                 ChangeState_Waiting();
+                //                 Thread.Sleep(5000);
+                //                 ChangeState_ReadyForAction();
+                ReadRads();
 
             });
             thread.Start();            
@@ -239,7 +242,7 @@ namespace RadXAutomat.Ui
             if (IS_DEMO)
             { 
                 Thread.Sleep(2000);
-                rads = 150;
+                rads = 175;
             }
             else
                 rads = _dongleConnector.GetRads();

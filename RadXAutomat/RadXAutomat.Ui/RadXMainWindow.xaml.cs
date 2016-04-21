@@ -61,16 +61,16 @@ namespace RadXAutomat.Ui
 
         private double AnimateRadBar(int rads)
         {
-            rads = (int)Math.Min(rads, _radProgrssBar.Maximum);
-            rads = (int)Math.Max(rads, _radProgrssBar.Minimum);
+//             rads = (int)Math.Min(rads, _radProgrssBar.Maximum);
+//             rads = (int)Math.Max(rads, _radProgrssBar.Minimum);
             var milisPerRad = 12.5;
-            _radProgrssBar.Value = _radProgrssBar.Maximum;
+            _radProgrssBar.Value = 0;// _radProgrssBar.Maximum;
             _radProgrssBar.Opacity = 1;
-            var time = TimeSpan.FromMilliseconds(milisPerRad * rads);
-            var value = _radProgrssBar.Maximum - rads;
+            var time = TimeSpan.FromMilliseconds(milisPerRad * Math.Min(rads,300));
+            var value = rads;//_radProgrssBar.Maximum - rads;
             var dur = new Duration(time);
             var ani = new DoubleAnimation(value, dur);
-            _radProgrssBar.BeginAnimation(ProgressBar.ValueProperty, ani);
+            _radProgrssBar.BeginAnimation(Slider.ValueProperty, ani);
 
 
 
@@ -78,13 +78,13 @@ namespace RadXAutomat.Ui
 
             opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
             
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3000)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3300)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3600)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3900)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(4900)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2000)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2300)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2600)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2900)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3900)))));
 
-            _radProgrssBar.BeginAnimation(ProgressBar.OpacityProperty, opaqAni);
+            _radProgrssBar.BeginAnimation(Slider.OpacityProperty, opaqAni);
             var sleeptime = time.TotalMilliseconds + 4900;
             return sleeptime;
         }
