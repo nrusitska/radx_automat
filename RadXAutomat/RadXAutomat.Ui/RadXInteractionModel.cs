@@ -42,12 +42,14 @@ namespace RadXAutomat.Ui
 
         const string ShowOptions = "Dann lass uns mal loslegen. Wenn Du RadX nehmen willst, kann es gleich losgehen.\n"
             +"Sag mir mit dem RadX-Knopf, wie viele du nehmen willst.\n"
-            +"Oder Du schaltest mit dem Joystick links oder rechts durch die Möglichkeiten. Du kannst [RadX nehmen] [PureLive nehmen] [RadAway nehmen] oder [Strahlung auslesen]\n"
+            +"Oder Du schaltest mit dem Joystick links oder rechts durch die Möglichkeiten. Du kannst \n"
+            +"[RadX nehmen]\n[PureLive nehmen]\n[RadAway nehmen] oder\n[Strahlung auslesen]\n"
             +"Mit [D] geht's dann los!";
-        const string WaitForTakeoffMessage = "So das war's für Dich. Dann mal raus hier und mach Platz für den nächsten!";
+        const string WaitForTakeoffMessage = "So das war's für Dich. Dann mal raus hier und mach' Platz für den nächsten!";
 
         const string TakeRadXMessage = "Na dann mal rein mit dem guten Zeug!";
-        const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt du wirklich bist...";
+        const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt Du wirklich bist...\n"
+            +"Strahlungsanalyse läuft";
         const string RadResultMessage_Green = "Alle Achtung! So sauber, wie frisch aus dem Bunker!";
         const string RadResultMessage_Yellow = "Du solltest langsam mal aufpassen, wo Du so rumläufst";
         const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Dort wo Du keinen anderen verstahlen kannst.";
@@ -282,6 +284,7 @@ namespace RadXAutomat.Ui
         private void ReadRads()
         {
             Write(ReadRadsMessage);
+            Thread.Sleep(2000);
             int rads = 0;
             if (IS_DEMO)
             { 
