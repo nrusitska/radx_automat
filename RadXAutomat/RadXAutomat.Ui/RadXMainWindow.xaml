@@ -26,7 +26,7 @@
                 <Border BorderBrush="Green" BorderThickness="4" Padding="10" >
                         <Label Foreground="Green">
                             <TextBlock TextWrapping="Wrap">
-                                <TextBlock Name="_consoleContent" TextWrapping="Wrap">Welcome to RadBoy</TextBlock>
+                                <TextBlock Name="_consoleContent" TextWrapping="Wrap">Starte R4DB.01</TextBlock>
                                 <LineBreak></LineBreak>
                                 <TextBlock>
                                     <Run Name="_consolePreCursor">/#&gt;</Run>

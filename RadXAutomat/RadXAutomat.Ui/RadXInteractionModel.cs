@@ -32,6 +32,9 @@ namespace RadXAutomat.Ui
 #else
         const bool IS_DEMO = false;
 #endif 
+        const string FirstMessage = "Hi! Ich bin der R4DB.01 - aber meine Freunde nennen mich RadBoy.\n"
+            +"Also wenn ich welche hätte, die noch leben würden.\n"
+            +"Oder überhaupt je welche gehabt hätte.";
         const string LockMessage = "Na dann beweis mir mal, dass Du hier was zu melden hast!";
         const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand auf, und wir schauen uns das mal an...";
         const string DongleFoundMessage = "Ah, da bist Du ja.";
@@ -91,11 +94,14 @@ namespace RadXAutomat.Ui
         }
 
         public void Start()
-        {           
-            if(IS_DEMO)
-                Demo();
-            else
-                ChangeState_Locked();
+        {
+            this.Dispatcher.BeginInvoke(new Action(() =>
+           {
+               if (IS_DEMO)
+                   Demo();
+               else
+                   ChangeState_Locked();
+           }));
 
             //Demo();
         }
@@ -125,13 +131,19 @@ namespace RadXAutomat.Ui
                 ReadRads();
             }));          
         }
-
+        bool firstStart = true;
         void ChangeState_Locked()
         {
             _state = ModelState.locked;
             _currentStateHandleKey = HandleKey_LockedWaitForUnlock;
             WriteInput("");
+            if(firstStart)
+            {
+                Write(FirstMessage);
+                Thread.Sleep(4000);
+            }
             Write(LockMessage);
+            firstStart = false;
             lockKey1 = false;
             lockKey2 = false;
             lastLockTime = DateTime.MinValue;
@@ -204,7 +216,7 @@ namespace RadXAutomat.Ui
             _state = ModelState.dongleReadySelectAction;
             _currentStateHandleKey = HandleKey_SelectAction;
             Write(DongleFoundMessage);
-            Thread.Sleep(3500);
+            Thread.Sleep(2000);
             Write(ShowOptions);
             HandleKey_SelectAction(int.MinValue, false);
             Debug.WriteLine("Exit ChangeState_ReadyForAction");
