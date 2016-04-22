@@ -2,10 +2,12 @@
 using RadXAutomat.NfcDongle;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace RadXAutomat.Ui
 {
@@ -15,7 +17,7 @@ namespace RadXAutomat.Ui
     {
         enum ModelState
         {
-            loked, waiting, dongleReadySelectAction, waitingForTakeoff
+            locked, waiting, dongleReadySelectAction, waitingForTakeoff
         }
         enum CommandOptions
         {
@@ -46,6 +48,7 @@ namespace RadXAutomat.Ui
         const string RadResultMessage_Green = "Alle Achtung! So sauber, wie frisch aus dem Bunker!";
         const string RadResultMessage_Yellow = "Du solltest langsam mal aufpassen, wo Du so rumläufst";
         const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Dort wo Du keinen anderen verstahlen kannst.";
+        const string RadResultMessage_Error = "Hoppla, da ist was schief gelaufen. Fangen wir nochmal an.";
 
         public RadXWrite Write { get; set; }
         public RadXWrite WriteInput { get; set; }
@@ -56,22 +59,33 @@ namespace RadXAutomat.Ui
         private CommandOptions _currentCommand;
         private int _radXTakeCount = 0;
         private NfcDongleWrapper _dongleConnector;
+        public Dispatcher Dispatcher { get; private set; }
         public RadXInteractionModel()
         {
+            new Thread(new ThreadStart(() =>
+            {
+                Dispatcher = Dispatcher.CurrentDispatcher;
+                Dispatcher.Run();
+            }))
+            { Name="RadUI-Interaction-Thread"}.Start();
+
             _dongleConnector = new NfcDongleWrapper();
-            _dongleConnector.BeginSearch();
             _dongleConnector.TagFound += _dongleConnector_TagFound;
             _dongleConnector.TagLost += _dongleConnector_TagLost;
+            _dongleConnector.BeginSearch();
+            
         }
 
         private void _dongleConnector_TagLost(object sender, EventArgs e)
         {
+            Debug.WriteLine("TagLost, state:" + _state );
             if(!IS_DEMO && _state == ModelState.waitingForTakeoff || _state == ModelState.dongleReadySelectAction)
                 ChangeState_Waiting();
         }
 
         private void _dongleConnector_TagFound(object sender, string e)
         {
+            Debug.WriteLine("TagFound, state:" + _state+" id: "+e);
             if (!IS_DEMO && _state == ModelState.waiting)
                 ChangeState_ReadyForAction();
         }
@@ -88,33 +102,33 @@ namespace RadXAutomat.Ui
 
         public void DoInput(Key key, bool keyState)
         {
-            var thread = new Thread(() =>
-            {
-                HandleKey_CheckIfLocked((int)key, keyState);
-                if (_currentStateHandleKey != null)
-                    _currentStateHandleKey((int)key, keyState);
-
-            });
-            thread.Start();
-
+            Dispatcher.BeginInvoke(new Action(() => {
+                if (HandleKey_CheckIfLocked((int)key, keyState))
+                {
+                    ChangeState_Locked();
+                }
+                else
+                {
+                        if (_currentStateHandleKey != null)
+                            _currentStateHandleKey((int)key, keyState);
+                }
+            }));
         }
         void Demo()
         {
-            var thread = new Thread(() => {
-
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
                 //                 Thread.Sleep(4000);
                 //                 ChangeState_Waiting();
                 //                 Thread.Sleep(5000);
                 //                 ChangeState_ReadyForAction();
                 ReadRads();
-
-            });
-            thread.Start();            
+            }));          
         }
 
         void ChangeState_Locked()
         {
-            _state = ModelState.loked;
+            _state = ModelState.locked;
             _currentStateHandleKey = HandleKey_LockedWaitForUnlock;
             WriteInput("");
             Write(LockMessage);
@@ -145,11 +159,13 @@ namespace RadXAutomat.Ui
             }
         }
 
-        void HandleKey_CheckIfLocked(int input, bool state)
+        bool HandleKey_CheckIfLocked(int input, bool state)
         {
-            if ( !state 
+            if (!state
                 && (input == KeyConstants.LOCK_1 || input == KeyConstants.LOCK_2))
-                ChangeState_Locked();
+                return true;
+            else
+                return false;
         }
 
         void ChangeState_Waiting()
@@ -163,6 +179,15 @@ namespace RadXAutomat.Ui
                 _currentStateHandleKey = null;
             WriteInput("");
             Write(WelcomeMessage);
+            if (_dongleConnector.IsTagConnected())
+            {
+                Thread.Sleep(1000);
+                if (_dongleConnector.IsTagConnected() && _state == ModelState.waiting)
+                {
+                    Debug.WriteLine("ChangeState_Waiting -> ChangeState_ReadyForAction");
+                    ChangeState_ReadyForAction();
+                }
+            }
         }
         void ChangeState_WaitForTakeoff()
         {
@@ -174,13 +199,15 @@ namespace RadXAutomat.Ui
 
         void ChangeState_ReadyForAction()
         {
+            Debug.WriteLine("Enter ChangeState_ReadyForAction");
             _radXTakeCount = 2;
             _state = ModelState.dongleReadySelectAction;
             _currentStateHandleKey = HandleKey_SelectAction;
             Write(DongleFoundMessage);
-            Thread.Sleep(5000);
+            Thread.Sleep(3500);
             Write(ShowOptions);
             HandleKey_SelectAction(int.MinValue, false);
+            Debug.WriteLine("Exit ChangeState_ReadyForAction");
         }
         void HandleKey_SelectAction(int input, bool state)
         {
@@ -223,16 +250,21 @@ namespace RadXAutomat.Ui
         private void DoCommandAction()
         {
             WriteInput("");
-
-            switch (_currentCommand)
-            {
-                case CommandOptions.RadX: TakeRadX(_radXTakeCount); break;
-                case CommandOptions.PureLive: TakePureLive(); break;
-                case CommandOptions.RadAway: TakeRadAway(); break;
-                case CommandOptions.ReadRads: ReadRads(); break;
+            try {
+                switch (_currentCommand)
+                {
+                    case CommandOptions.RadX: TakeRadX(_radXTakeCount); break;
+                    case CommandOptions.PureLive: TakePureLive(); break;
+                    case CommandOptions.RadAway: TakeRadAway(); break;
+                    case CommandOptions.ReadRads: ReadRads(); break;
+                }
+                Thread.Sleep(4000);
+                ChangeState_WaitForTakeoff();
             }
-            Thread.Sleep(4000);
-            ChangeState_WaitForTakeoff();
+            catch (InvalidOperationException)
+            {
+                ChangeState_Waiting();
+            }
         }
 
         private void ReadRads()
@@ -250,7 +282,14 @@ namespace RadXAutomat.Ui
                 Thread.Sleep((int)ShowRadsCountAnimation(rads));
 
             //bis 100 grün, bis 200 gelb, dann rot
-            if(rads <= 100) {
+            if(rads < 0)
+            {
+                Write(RadResultMessage_Error);
+                Thread.Sleep(2000);
+                throw new InvalidOperationException();
+            }
+            else if(rads <= 100)
+            {
                 Write(RadResultMessage_Green);
             }
             else if (rads <= 200)
@@ -296,6 +335,7 @@ namespace RadXAutomat.Ui
 
         public void Dispose()
         {
+            Dispatcher.InvokeShutdown();
             _dongleConnector.Close();
         }
     }

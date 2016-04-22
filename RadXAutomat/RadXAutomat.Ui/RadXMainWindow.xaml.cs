@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -61,6 +62,8 @@ namespace RadXAutomat.Ui
 
         private double AnimateRadBar(int rads)
         {
+            if (rads == -1)
+                return 0;
 //             rads = (int)Math.Min(rads, _radProgrssBar.Maximum);
 //             rads = (int)Math.Max(rads, _radProgrssBar.Minimum);
             var milisPerRad = 12.5;
@@ -139,7 +142,14 @@ namespace RadXAutomat.Ui
         {
             if (_model != null)
             {
-                _model.Dispose();
+                try
+                {
+                    _model.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.ToString());
+                }
             }
         }
     }
