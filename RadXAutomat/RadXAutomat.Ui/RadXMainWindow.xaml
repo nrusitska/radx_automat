@@ -39,9 +39,9 @@
             </Grid>
             <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black"
                        Opacity="{Binding ElementName=_radProgrssBar, Path=Opacity}" >
-                <Slider Minimum="0" Maximum="10000" Name="_radProgrssBar" Value="850.55" Opacity="0" Visibility="Collapsed" />
+                <Slider Minimum="0" Maximum="10000" Name="_radProgrssBar" Value="0" Opacity="0" Visibility="Collapsed" />
                 <ProgressBar Height="130" Width="1000"  
-                         Minimum="0" Maximum="300"  Style="{StaticResource RadXProgressBarStyle}" Value="{Binding ElementName=_radProgrssBar, Path=Value}">
+                         Minimum="0" Maximum="300"  Style="{StaticResource RadXProgressBarStyle}" Value="{Binding ElementName=_radProgrssBar, Path=Value, Mode=OneWay}">
                     
                 </ProgressBar>
                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Background="Black">
@@ -50,7 +50,7 @@
                            MinWidth="100" TextAlignment="Center"
                            FontWeight="Bold" FontSize="48"  Padding="5 0" Background="Black"
                            
-                    Foreground="Green" Text="{Binding ElementName=_radProgrssBar, Path=Value,StringFormat={}{0:0}}"></TextBlock>
+                    Foreground="Green" Text="{Binding ElementName=_radProgrssBar, Path=Value, Mode=OneWay, StringFormat={}{0:0}}"></TextBlock>
                 </Border>
                 </Grid>
             </Grid>

@@ -80,6 +80,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RadXAutomat.Audio\RadXAutomat.Audio.csproj">
+      <Project>{37fa2746-0cae-4780-8ad7-fce357027fb4}</Project>
+      <Name>RadXAutomat.Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RadXAutomat.NfcDongle\RadXAutomat.NfcDongle.csproj">
       <Project>{37f623bd-04a3-4517-b400-b810624a768c}</Project>
       <Name>RadXAutomat.NfcDongle</Name>

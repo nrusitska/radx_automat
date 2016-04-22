@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RadXAutomat.Audio;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -67,13 +68,17 @@ namespace RadXAutomat.Ui
 //             rads = (int)Math.Min(rads, _radProgrssBar.Maximum);
 //             rads = (int)Math.Max(rads, _radProgrssBar.Minimum);
             var milisPerRad = 12.5;
+            //_radProgrssBar.ClearValue(Slider.ValueProperty);
             _radProgrssBar.Value = 0;// _radProgrssBar.Maximum;
             _radProgrssBar.Opacity = 1;
             var time = TimeSpan.FromMilliseconds(milisPerRad * Math.Min(rads,300));
             var value = rads;//_radProgrssBar.Maximum - rads;
             var dur = new Duration(time);
-            var ani = new DoubleAnimation(value, dur);
-            _radProgrssBar.BeginAnimation(Slider.ValueProperty, ani);
+            var ani = new DoubleAnimationUsingKeyFrames();
+            ani.Duration = dur;
+            ani.KeyFrames.Add(new LinearDoubleKeyFrame(0, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
+            ani.KeyFrames.Add(new LinearDoubleKeyFrame(value, KeyTime.FromTimeSpan(time)));
+            _radProgrssBar.BeginAnimation(Slider.ValueProperty, ani, HandoffBehavior.SnapshotAndReplace);
 
 
 
@@ -87,8 +92,12 @@ namespace RadXAutomat.Ui
             opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2900)))));
             opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3900)))));
 
-            _radProgrssBar.BeginAnimation(Slider.OpacityProperty, opaqAni);
+            _radProgrssBar.BeginAnimation(Slider.OpacityProperty, opaqAni, HandoffBehavior.SnapshotAndReplace);
             var sleeptime = time.TotalMilliseconds + 4900;
+
+            AudioManager.Instance.PlaySound("RadSweep.wav", TimeSpan.FromMilliseconds(0), time);
+            AudioManager.Instance.PlaySound("tripple-bell.wav", 200+(int)time.TotalMilliseconds,TimeSpan.FromMilliseconds(0), TimeSpan.MaxValue);
+
             return sleeptime;
         }
 

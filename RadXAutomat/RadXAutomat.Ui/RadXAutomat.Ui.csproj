@@ -124,6 +124,10 @@
     <Resource Include="Resources\Football.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RadXAutomat.Audio\RadXAutomat.Audio.csproj">
+      <Project>{37fa2746-0cae-4780-8ad7-fce357027fb4}</Project>
+      <Name>RadXAutomat.Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RadXAutomat.Model\RadXAutomat.Model.csproj">
       <Project>{cfc9b63b-7449-4fb2-85ed-f93b83e6cc77}</Project>
       <Name>RadXAutomat.Model</Name>

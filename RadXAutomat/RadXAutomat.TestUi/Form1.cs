@@ -1,4 +1,5 @@
-﻿using RadXAutomat.NfcDongle;
+﻿using RadXAutomat.Audio;
+using RadXAutomat.NfcDongle;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,5 +56,10 @@ namespace RadXAutomat.TestUi
 
         NfcDongleWrapper _nfcWrapper;
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //var sound = new AudioManager();
+            //sound.PlaySweep();
+        }
     }
 }
