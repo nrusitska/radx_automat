@@ -38,27 +38,30 @@ namespace RadXAutomat.Ui
             +"Also wenn ich welche hätte, die noch leben würden.\n"
             +"Oder ich überhaupt je welche gehabt hätte.";
         const string LockMessage = "Na dann beweis mir mal, dass Du hier was zu melden hast!";
-        const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand den Scanner, und wir schauen uns das mal an...";
-        const string DongleFoundMessage = "Ah, da bist Du ja.";
+        const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand den Scanner, und wir schauen uns das mal an..."+
+            "\n\n\n"            
+            +"Hand auflegen zum Starten oder [B] für Highscores";
+        const string DongleFoundMessage = "Okay, da bist Du ja.";
         const string DongleFoundMessage_Jack = "Na das Händchen kenn ich doch! Ladies and Gentleman - Jack Bones is in the house!";
 
         const string ShowOptions = "Dann lass uns mal loslegen. Wenn Du RadX nehmen willst, kann es gleich losgehen.\n"
             +"Sag mir mit dem RadX-Knopf, wie viele du nehmen willst.\n"
             +"Oder Du schaltest mit dem Joystick links oder rechts durch die Möglichkeiten. Du kannst \n"
             +"[RadX nehmen]\n[PureLive nehmen]\n[RadAway nehmen] oder\n[Strahlung auslesen]\n"
-            +"Mit [D] geht's dann los!";
+            +"Mit [C] geht's dann los!";
         const string WaitForTakeoffMessage = "So das war's für Dich. Dann mal raus hier und mach' Platz für den nächsten!";
 
         const string TakeRadXMessage = "Na dann mal rein mit dem guten Zeug!";
-        const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt Du wirklich bist...\n"
-            +"Strahlungsanalyse läuft";
+        const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt Du wirklich bist!\n"
+            +"Strahlungsanalyse läuft...";
         const string RadResultMessage_Green = "Alle Achtung! Du bist so sauber, wie frisch aus dem Bunker!";
         const string RadResultMessage_Yellow = "Pass mal langsam auf, wo Du Dich so rumtreibst!";
         const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Irgendwo wo Du keine anderen Menschen verstahlen kannst.";
         const string RadResultMessage_Error = "Hoppla, da ist was schief gelaufen. Fangen wir nochmal an.";
 
         const string StatisticMessage = "Dann lasst uns mal schauen, was wir bisher alles geschafft haben:\n";
-        const string StatisticMessage_DeleteOption = "Drücke [A] um die Statistik zu löschen. Zurück geht's mit [B]";
+        const string StatisticMessage_DeleteOption = "Drücke [A] um die Statistik zu löschen.\n"
+            +"Zurück geht's mit [B]";
         const string DeleteStatistic_Ask = "Sicher? Dann bestätige mit [C]";
         const string DeleteStatistic_Perform = "Und weg damit.";
         public RadXWrite Write { get; set; }
@@ -145,12 +148,13 @@ namespace RadXAutomat.Ui
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
+                //ChangeState_Locked();
                 //                 Thread.Sleep(4000);
                 //                 ChangeState_Waiting();
                 //                 Thread.Sleep(5000);
-                //                 ChangeState_ReadyForAction();
+                ChangeState_ReadyForAction();
                 //ReadRads();
-                ChangeState_Waiting();
+                //ChangeState_Waiting();
                 //ChangeState_ReadyForAction();
             }));          
         }
@@ -163,10 +167,11 @@ namespace RadXAutomat.Ui
             if(firstStart)
             {
                 Write(FirstMessage);
-                AudioManager.Instance.PlaySound("First Message_e.mp3");
-                Thread.Sleep(4000);
+                AudioManager.Instance.PlaySound("First Message.mp3");
+                Thread.Sleep(10500);
             }
             Write(LockMessage);
+            AudioManager.Instance.PlaySound("Lock Message.mp3");
             firstStart = false;
             lockKey1 = false;
             lockKey2 = false;
@@ -197,6 +202,8 @@ namespace RadXAutomat.Ui
 
         bool HandleKey_CheckIfLocked(int input, bool state)
         {
+            if (IS_DEMO)
+                return false;
             if (!state
                 && (input == KeyConstants.LOCK_1 || input == KeyConstants.LOCK_2))
                 return true;
@@ -218,6 +225,8 @@ namespace RadXAutomat.Ui
                     "RadAway:  {2}\n",
                     rep.RadX,rep.PureLive, rep.RadAway);
                 Write(StatisticMessage + "\n" + reportMessage + "\n" + StatisticMessage_DeleteOption);
+                AudioManager.Instance.PlaySound("Stat Message.mp3");
+                AudioManager.Instance.PlaySound("Stat Option.mp3",4000);
             }
 
 
@@ -238,6 +247,7 @@ namespace RadXAutomat.Ui
                 _currentStateHandleKey = HandleKey_Waiting;
             WriteInput("");
             Write(WelcomeMessage);
+            AudioManager.Instance.PlaySound("Welcome Message.mp3");
             if (_dongleConnector.IsTagConnected())
             {
                 Thread.Sleep(1000);
@@ -270,17 +280,19 @@ namespace RadXAutomat.Ui
                     {
                         if(k == KeyConstants.FUNC_C)
                         {
-                            using(var repo = new MedicationIntakeRepository())
+                            Write(DeleteStatistic_Perform);
+                            AudioManager.Instance.PlaySound("Stat Delete Perform.mp3");
+                            using (var repo = new MedicationIntakeRepository())
                             {
                                 repo.ClearStatistic();
                             }
-
+                            Thread.Sleep(2000);
                         }
                         ChangeState_ShowStatistics();
                     }
                 };
                 Write(DeleteStatistic_Ask);
-
+                AudioManager.Instance.PlaySound("Stat Ask.mp3");
             }
             else if (input == KeyConstants.FUNC_B)
             {
@@ -302,6 +314,7 @@ namespace RadXAutomat.Ui
                 _currentStateHandleKey = null;
             WriteInput("");
             Write(WaitForTakeoffMessage);
+            AudioManager.Instance.PlaySound("Wait For Takeoff.mp3");
         }
 
         void ChangeState_ReadyForAction()
@@ -311,8 +324,10 @@ namespace RadXAutomat.Ui
             _state = ModelState.dongleReadySelectAction;
             _currentStateHandleKey = HandleKey_SelectAction;
             Write(DongleFoundMessage);
+            AudioManager.Instance.PlaySound("Dongle Found.mp3");
             Thread.Sleep(2000);
             Write(ShowOptions);
+            AudioManager.Instance.PlaySound("Show Options C.mp3");
             HandleKey_SelectAction(int.MinValue, false);
             Debug.WriteLine("Exit ChangeState_ReadyForAction");
         }
@@ -320,7 +335,7 @@ namespace RadXAutomat.Ui
         {
             if (state)
                 return;
-            if (input == KeyConstants.FUNC_D)
+            if (input == KeyConstants.FUNC_C)
             {
                 DoCommandAction();
                 return;
@@ -365,7 +380,7 @@ namespace RadXAutomat.Ui
                     case CommandOptions.RadAway: TakeRadAway(); break;
                     case CommandOptions.ReadRads: ReadRads(); break;
                 }
-                Thread.Sleep(4000);
+                //Thread.Sleep(4000);
                 ChangeState_WaitForTakeoff();
             }
             catch (InvalidOperationException)
@@ -377,11 +392,12 @@ namespace RadXAutomat.Ui
         private void ReadRads()
         {
             Write(ReadRadsMessage);
-            Thread.Sleep(2000);
+            AudioManager.Instance.PlaySound("ReadRad.mp3");
+            Thread.Sleep(5300);
             int rads = 0;
             if (IS_DEMO)
             { 
-                Thread.Sleep(2000);
+            //    Thread.Sleep(2000);
                 rads = 175;
             }
             else
@@ -393,20 +409,27 @@ namespace RadXAutomat.Ui
             if(rads < 0)
             {
                 Write(RadResultMessage_Error);
+                AudioManager.Instance.PlaySound("Rad Error.mp3");
                 Thread.Sleep(2000);
                 throw new InvalidOperationException();
             }
             else if(rads <= 100)
             {
                 Write(RadResultMessage_Green);
+                AudioManager.Instance.PlaySound("Rad Green.mp3");
+                Thread.Sleep(3500);
             }
             else if (rads <= 200)
             {
                 Write(RadResultMessage_Yellow);
+                AudioManager.Instance.PlaySound("Rad Yellow.mp3");
+                Thread.Sleep(2500);
             }
             else
             {
                 Write(RadResultMessage_Red);
+                AudioManager.Instance.PlaySound("Rad Red.mp3");
+                Thread.Sleep(9500);
             }
 
         }
@@ -414,6 +437,8 @@ namespace RadXAutomat.Ui
         private void TakeRadAway()
         {
             Write(TakeRadXMessage);
+            AudioManager.Instance.PlaySound("Take RadX Message.mp3");
+            Thread.Sleep(2000);
             if (IS_DEMO)
                 Thread.Sleep(2000);
             else
@@ -429,6 +454,8 @@ namespace RadXAutomat.Ui
         private void TakePureLive()
         {
             Write(TakeRadXMessage);
+            AudioManager.Instance.PlaySound("Take RadX Message.mp3");
+            Thread.Sleep(2000);
             if (IS_DEMO)
                 Thread.Sleep(2000);
             else
@@ -444,6 +471,8 @@ namespace RadXAutomat.Ui
         private void TakeRadX(int _radXTakeCount)
         {
             Write(TakeRadXMessage);
+            AudioManager.Instance.PlaySound("Take RadX Message.mp3");
+            Thread.Sleep(2000);
             if (IS_DEMO)
                 Thread.Sleep(2000);
             else

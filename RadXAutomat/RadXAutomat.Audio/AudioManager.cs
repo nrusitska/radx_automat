@@ -15,6 +15,7 @@ namespace RadXAutomat.Audio
     {
         static AudioManager _instance = new AudioManager();
         public static AudioManager Instance { get { return _instance; } }
+        public void SetDispatcher(Dispatcher dis) { _Dispatcher = dis; }
         protected Dispatcher _Dispatcher;
         protected AudioManager()
         {
@@ -31,13 +32,18 @@ namespace RadXAutomat.Audio
 //                 thr.Join(100);
         }
 
-        WaveOut _output;
+        WaveOut _output = new WaveOut();
         public void PlaySound(string sound, TimeSpan offset, TimeSpan length)
         {
-            new Thread(() =>
+            _Dispatcher.Invoke(new Action(() => {
+                _output.Dispose();
+                _output = new WaveOut();
+            }));
+            
+            var ac = new Action(() =>
             {
-                WaveOut _output = new WaveOut();
-                //_output.Stop();
+                //WaveOut _output = new WaveOut();
+                _output.Stop();                
                 var file = new AudioFileReader("sounds\\" + sound);
                 var trimmer = new OffsetSampleProvider(file);
                 trimmer.SkipOver = (offset);
@@ -45,8 +51,9 @@ namespace RadXAutomat.Audio
                     trimmer.Take = (length);
                 _output.Init(trimmer);
                 _output.Play();
-            })
-            { Priority= ThreadPriority.Highest }.Start();
+            });
+            //{ Priority= ThreadPriority.Highest }.Start();
+            _Dispatcher.BeginInvoke(ac);
             
         }
         public void PlaySound(string file)

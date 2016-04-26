@@ -85,24 +85,25 @@ namespace RadXAutomat.Ui
             var opaqAni = new DoubleAnimationUsingKeyFrames();
 
             opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(TimeSpan.FromMilliseconds(0))));
-            
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2000)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2300)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2600)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(2900)))));
-            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(3900)))));
+            int flOfs = 200;
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(flOfs)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(flOfs+300)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(flOfs+600)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(1, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(flOfs+900)))));
+            opaqAni.KeyFrames.Add(new DiscreteDoubleKeyFrame(0, KeyTime.FromTimeSpan(time.Add(TimeSpan.FromMilliseconds(flOfs+1900)))));
 
             _radProgrssBar.BeginAnimation(Slider.OpacityProperty, opaqAni, HandoffBehavior.SnapshotAndReplace);
-            var sleeptime = time.TotalMilliseconds + 4900;
+            var sleeptime = time.TotalMilliseconds + flOfs + 1900;
 
             AudioManager.Instance.PlaySound("RadSweep.wav", TimeSpan.FromMilliseconds(0), time);
-            AudioManager.Instance.PlaySound("tripple-bell.wav", 200+(int)time.TotalMilliseconds,TimeSpan.FromMilliseconds(0), TimeSpan.MaxValue);
+            AudioManager.Instance.PlaySound("tripple-bell.wav", flOfs + (int)time.TotalMilliseconds,TimeSpan.FromMilliseconds(0), TimeSpan.MaxValue);
 
             return sleeptime;
         }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
+            AudioManager.Instance.SetDispatcher(Dispatcher);
             //Write("Als Gregor Samsa eines Morgens aus unruhigen Träumen erwachte, fand er sich in seinem Bett zu einem ungeheueren Ungeziefer verwandelt. ");
             StartCursorAnimation();
             _model = new RadXInteractionModel();
@@ -120,6 +121,7 @@ namespace RadXAutomat.Ui
                 return aniDur;
             };
             _model.Start();
+            
         }
         void StartCursorAnimation()
         {            

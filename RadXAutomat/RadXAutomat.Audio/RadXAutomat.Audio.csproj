@@ -65,60 +65,60 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="sounds\Dongle Found Jack_e.mp3">
+    <None Include="sounds\Dongle Found Jack.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Dongle Found_e.mp3">
+    <None Include="sounds\Dongle Found.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\First Message_e.mp3">
+    <None Include="sounds\First Message.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Lock Message_e.mp3">
+    <None Include="sounds\Lock Message.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\ReadRad_e.mp3">
+    <None Include="sounds\ReadRad.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Show Options C_e.mp3">
+    <None Include="sounds\Show Options C.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="sounds\Show Options_e.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Take Radx Message_e.mp3">
+    <None Include="sounds\Take Radx Message.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Wait For Takeoff_e.mp3">
+    <None Include="sounds\Wait For Takeoff.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Welcome Message_e.mp3">
+    <None Include="sounds\Welcome Message.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="sounds\Rad Error_e.mp3">
+    <None Include="sounds\Rad Error.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Rad green_e.mp3">
+    <None Include="sounds\Rad green.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Rad Red_e.mp3">
+    <None Include="sounds\Rad Red.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Rad Yellow_e.mp3">
+    <None Include="sounds\Rad Yellow.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Stat Ask_e.mp3">
+    <None Include="sounds\Stat Ask.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Stat Delete Perform_e.mp3">
+    <None Include="sounds\Stat Delete Perform.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Stat Message_e.mp3">
+    <None Include="sounds\Stat Message.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="sounds\Stat Option_e.mp3">
+    <None Include="sounds\Stat Option.mp3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
