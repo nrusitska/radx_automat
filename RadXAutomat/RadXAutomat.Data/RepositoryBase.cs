@@ -27,9 +27,7 @@ namespace RadXAutomat.Data
             if (Session != null)
                 Session.Dispose();
             Session = CreateSession();
-            Session.FlushMode = FlushMode.Commit;
             UnitOfWork = Session.BeginTransaction();
-            UnitOfWork.Begin();
         }
         public void Save(object obj)
         {
@@ -45,7 +43,6 @@ namespace RadXAutomat.Data
             try
             {
                 UnitOfWork.Commit();
-                Session.Flush();
             }
             catch (Exception ex)
             {
