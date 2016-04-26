@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RadXAutomat.Data;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -20,12 +21,18 @@ namespace RadXAutomat.Ui
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException; ;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            DataManager.GetInstance().Init();
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             Debug.WriteLine(e.ExceptionObject.ToString());
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            DataManager.GetInstance().Close();
         }
     }
 }

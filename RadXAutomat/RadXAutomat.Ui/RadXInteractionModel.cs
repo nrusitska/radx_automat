@@ -1,4 +1,6 @@
-﻿using RadXAutomat.Model;
+﻿using RadXAutomat.Audio;
+using RadXAutomat.Data;
+using RadXAutomat.Model;
 using RadXAutomat.NfcDongle;
 using System;
 using System.Collections.Generic;
@@ -28,17 +30,17 @@ namespace RadXAutomat.Ui
         }
 
 #if DEBUG
-        const bool IS_DEMO = false;
+        const bool IS_DEMO = true;
 #else
         const bool IS_DEMO = false;
 #endif 
         const string FirstMessage = "Hi! Ich bin der R4DB.01 - aber meine Freunde nennen mich RadBoy.\n"
             +"Also wenn ich welche hätte, die noch leben würden.\n"
-            +"Oder überhaupt je welche gehabt hätte.";
+            +"Oder ich überhaupt je welche gehabt hätte.";
         const string LockMessage = "Na dann beweis mir mal, dass Du hier was zu melden hast!";
-        const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand auf, und wir schauen uns das mal an...";
+        const string WelcomeMessage = "Alles klar Ödländer, dann leg mal Deine Hand den Scanner, und wir schauen uns das mal an...";
         const string DongleFoundMessage = "Ah, da bist Du ja.";
-        const string DongleFoundMessage_Jack = "Na das Händchen erkenn ich doch! Ladies and Gentleman - Jack Bones is in the house!";
+        const string DongleFoundMessage_Jack = "Na das Händchen kenn ich doch! Ladies and Gentleman - Jack Bones is in the house!";
 
         const string ShowOptions = "Dann lass uns mal loslegen. Wenn Du RadX nehmen willst, kann es gleich losgehen.\n"
             +"Sag mir mit dem RadX-Knopf, wie viele du nehmen willst.\n"
@@ -50,7 +52,7 @@ namespace RadXAutomat.Ui
         const string TakeRadXMessage = "Na dann mal rein mit dem guten Zeug!";
         const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt Du wirklich bist...\n"
             +"Strahlungsanalyse läuft";
-        const string RadResultMessage_Green = "Alle Achtung! So sauber, wie frisch aus dem Bunker!";
+        const string RadResultMessage_Green = "Alle Achtung! Du bist so sauber, wie frisch aus dem Bunker!";
         const string RadResultMessage_Yellow = "Du solltest langsam mal aufpassen, wo Du so rumläufst";
         const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Dort wo Du keinen anderen verstahlen kannst.";
         const string RadResultMessage_Error = "Hoppla, da ist was schief gelaufen. Fangen wir nochmal an.";
@@ -130,7 +132,8 @@ namespace RadXAutomat.Ui
                 //                 ChangeState_Waiting();
                 //                 Thread.Sleep(5000);
                 //                 ChangeState_ReadyForAction();
-                ReadRads();
+                //ReadRads();
+                ChangeState_ReadyForAction();
             }));          
         }
         bool firstStart = true;
@@ -142,6 +145,7 @@ namespace RadXAutomat.Ui
             if(firstStart)
             {
                 Write(FirstMessage);
+                AudioManager.Instance.PlaySound("First Message_e.mp3");
                 Thread.Sleep(4000);
             }
             Write(LockMessage);
@@ -325,6 +329,10 @@ namespace RadXAutomat.Ui
                 Thread.Sleep(2000);
             else
                 _dongleConnector.TakeRadAway();
+            using(var repo = new MedicationIntakeRepository())
+            {
+                repo.RecordIntake(MedicationType.RadAway);
+            }
             ReadRads();
         }
 
@@ -335,6 +343,10 @@ namespace RadXAutomat.Ui
                 Thread.Sleep(2000);
             else
                 _dongleConnector.TakePureLife();
+            using (var repo = new MedicationIntakeRepository())
+            {
+                repo.RecordIntake(MedicationType.PureLive);
+            }
             ReadRads();
         }
 
@@ -345,6 +357,10 @@ namespace RadXAutomat.Ui
                 Thread.Sleep(2000);
             else
                 _dongleConnector.TakeRadX(_radXTakeCount);
+            using (var repo = new MedicationIntakeRepository())
+            {
+                repo.RecordIntake(MedicationType.RadX,_radXTakeCount);
+            }
             ReadRads();
         }
 

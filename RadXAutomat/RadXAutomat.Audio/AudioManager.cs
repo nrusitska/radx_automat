@@ -7,6 +7,7 @@ using System.Media;
 using System.Speech.Synthesis;
 using System.Text;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace RadXAutomat.Audio
 {
@@ -14,31 +15,48 @@ namespace RadXAutomat.Audio
     {
         static AudioManager _instance = new AudioManager();
         public static AudioManager Instance { get { return _instance; } }
-        protected AudioManager() { }
-        public void Test()
+        protected Dispatcher _Dispatcher;
+        protected AudioManager()
         {
-            var synth = new SpeechSynthesizer();
-            synth.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Adult);
-            synth.SpeakSsml("<speak version='1.0' xml:lang='de'> <s>halli hallo</s> <s xml:lang='en'>Jack Bones </s></speak>");
+//             var thr = new Thread(new ThreadStart(() =>
+//             {
+//                 _Dispatcher = Dispatcher.CurrentDispatcher;
+                //_output = new WaveOut();
+//                 Dispatcher.Run();
+//             }))
+//             { Name = "RadUI-Audio-Thread", Priority=ThreadPriority.AboveNormal };
+//             thr.Start();
+//             
+//             while (_output == null || _Dispatcher == null)
+//                 thr.Join(100);
         }
-        WaveOut _output = new WaveOut();
+
+        WaveOut _output;
         public void PlaySound(string sound, TimeSpan offset, TimeSpan length)
         {
-            //            SoundPlayer player = new SoundPlayer();
-            //            player.SoundLocation = path;
-            //             player.Load();
-            //             player.Play();
-
-            _output.Stop();
-            var file = new AudioFileReader(sound);
-            var trimmer = new OffsetSampleProvider(file);
-            trimmer.SkipOver = (offset);
-            trimmer.Take = (length);
-            _output.Init(trimmer);
-            _output.Play();
+            new Thread(() =>
+            {
+                WaveOut _output = new WaveOut();
+                //_output.Stop();
+                var file = new AudioFileReader("sounds\\" + sound);
+                var trimmer = new OffsetSampleProvider(file);
+                trimmer.SkipOver = (offset);
+                if (length != TimeSpan.MaxValue)
+                    trimmer.Take = (length);
+                _output.Init(trimmer);
+                _output.Play();
+            })
+            { Priority= ThreadPriority.Highest }.Start();
             
         }
-
+        public void PlaySound(string file)
+        {
+            PlaySound(file, TimeSpan.FromMilliseconds(0), TimeSpan.MaxValue);
+        }
+        public void PlaySound(string file, int waitBeforePlay)
+        {
+            PlaySound(file, waitBeforePlay, TimeSpan.FromMilliseconds(0), TimeSpan.MaxValue);
+        }
         public void PlaySound(string file, int waitBeforePlay, TimeSpan fileOffsetMillis, TimeSpan playDur)
         {
             Timer timer = null;
@@ -50,10 +68,6 @@ namespace RadXAutomat.Audio
                 null,waitBeforePlay,Timeout.Infinite);
             
         }
-        
-        public void PlaySweep(int offset, TimeSpan length)
-        {
-            PlaySound("RadSweep.wav",TimeSpan.MinValue,length);
-        }
+
     }
 }
