@@ -33,7 +33,8 @@ namespace RadXAutomat.Data
             var intake = new MedicationIntake();
             intake.MedicationType = type;
             intake.Amount = amount;
-            SaveOrUpdate(intake);
+            intake.Timestamp = DateTime.Now;
+            Save(intake);
         }
 
         public void ClearStatistic()

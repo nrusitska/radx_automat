@@ -19,7 +19,7 @@ namespace RadXAutomat.Ui
     {
         enum ModelState
         {
-            locked, waiting, dongleReadySelectAction, waitingForTakeoff
+            locked, waiting, dongleReadySelectAction, waitingForTakeoff, showStatistics
         }
         enum CommandOptions
         {
@@ -53,10 +53,14 @@ namespace RadXAutomat.Ui
         const string ReadRadsMessage = "Dann wollen wir mal sehen, wie verstrahlt Du wirklich bist...\n"
             +"Strahlungsanalyse läuft";
         const string RadResultMessage_Green = "Alle Achtung! Du bist so sauber, wie frisch aus dem Bunker!";
-        const string RadResultMessage_Yellow = "Du solltest langsam mal aufpassen, wo Du so rumläufst";
-        const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Dort wo Du keinen anderen verstahlen kannst.";
+        const string RadResultMessage_Yellow = "Pass mal langsam auf, wo Du Dich so rumtreibst!";
+        const string RadResultMessage_Red = "Oh oh. Das sieht böse aus. Vielleicht gehst Du einfach mal wo anders hin. Irgendwo wo Du keine anderen Menschen verstahlen kannst.";
         const string RadResultMessage_Error = "Hoppla, da ist was schief gelaufen. Fangen wir nochmal an.";
 
+        const string StatisticMessage = "Dann lasst uns mal schauen, was wir bisher alles geschafft haben:\n";
+        const string StatisticMessage_DeleteOption = "Drücke [A] um die Statistik zu löschen. Zurück geht's mit [B]";
+        const string DeleteStatistic_Ask = "Sicher? Dann bestätige mit [C]";
+        const string DeleteStatistic_Perform = "Und weg damit.";
         public RadXWrite Write { get; set; }
         public RadXWrite WriteInput { get; set; }
         public Func<int,double> ShowRadsCountAnimation { get; set; }
@@ -69,18 +73,22 @@ namespace RadXAutomat.Ui
         public Dispatcher Dispatcher { get; private set; }
         public RadXInteractionModel()
         {
-            new Thread(new ThreadStart(() =>
+            var thr = new Thread(new ThreadStart(() =>
             {
                 Dispatcher = Dispatcher.CurrentDispatcher;
                 Dispatcher.Run();
             }))
-            { Name="RadUI-Interaction-Thread"}.Start();
-
+            { Name = "RadUI-Interaction-Thread", Priority = ThreadPriority.AboveNormal };
+            thr.Start();
+            while (thr.ThreadState != System.Threading.ThreadState.Running)
+                thr.Join(10);
             _dongleConnector = new NfcDongleWrapper();
-            _dongleConnector.TagFound += _dongleConnector_TagFound;
-            _dongleConnector.TagLost += _dongleConnector_TagLost;
-            _dongleConnector.BeginSearch();
-            
+            if (!IS_DEMO)
+            {
+                _dongleConnector.TagFound += _dongleConnector_TagFound;
+                _dongleConnector.TagLost += _dongleConnector_TagLost;
+                _dongleConnector.BeginSearch();
+            }
         }
 
         private void _dongleConnector_TagLost(object sender, EventArgs e)
@@ -99,12 +107,21 @@ namespace RadXAutomat.Ui
 
         public void Start()
         {
+            if (this.Dispatcher == null)
+                Thread.Sleep(100);
             this.Dispatcher.BeginInvoke(new Action(() =>
            {
-               if (IS_DEMO)
-                   Demo();
-               else
-                   ChangeState_Locked();
+               try
+               {
+                   if (IS_DEMO)
+                       Demo();
+                   else
+                       ChangeState_Locked();
+               }
+               catch (System.Exception ex)
+               {
+                   ;
+               }
            }));
 
             //Demo();
@@ -133,7 +150,8 @@ namespace RadXAutomat.Ui
                 //                 Thread.Sleep(5000);
                 //                 ChangeState_ReadyForAction();
                 //ReadRads();
-                ChangeState_ReadyForAction();
+                ChangeState_Waiting();
+                //ChangeState_ReadyForAction();
             }));          
         }
         bool firstStart = true;
@@ -186,15 +204,38 @@ namespace RadXAutomat.Ui
                 return false;
         }
 
+        void ChangeState_ShowStatistics()
+        {            
+            _state =ModelState.showStatistics;
+            _currentStateHandleKey = HandleKey_ShowStatistics;
+            WriteInput("");
+            using (var repo = new MedicationIntakeRepository())
+            {
+                var rep = repo.GetMedicationReport();
+                string reportMessage = string.Format(
+                    "RadX:     {0}\n"+
+                    "PureLive: {1}\n"+
+                    "RadAway:  {2}\n",
+                    rep.RadX,rep.PureLive, rep.RadAway);
+                Write(StatisticMessage + "\n" + reportMessage + "\n" + StatisticMessage_DeleteOption);
+            }
+
+
+        }
+
         void ChangeState_Waiting()
         {
             _state = ModelState.waiting;
             if(IS_DEMO)
             {
-                _currentStateHandleKey = (k, s) => { if (k == 37 && s) ChangeState_ReadyForAction(); };
+                _currentStateHandleKey = (k, s) => {
+                    if (k == 37 && s) ChangeState_ReadyForAction();
+                    else
+                        HandleKey_Waiting(k, s);
+                };
             }
             else
-                _currentStateHandleKey = null;
+                _currentStateHandleKey = HandleKey_Waiting;
             WriteInput("");
             Write(WelcomeMessage);
             if (_dongleConnector.IsTagConnected())
@@ -207,10 +248,58 @@ namespace RadXAutomat.Ui
                 }
             }
         }
+        void HandleKey_Waiting(int input, bool state)
+        {
+            if (state)
+                return;
+            else if (input == KeyConstants.FUNC_B)
+            {
+                ChangeState_ShowStatistics();
+            }
+        }
+        void HandleKey_ShowStatistics(int input, bool state)
+        {
+            if (state)
+                return;
+
+            if (input == KeyConstants.FUNC_A)
+            {
+                _currentStateHandleKey = (k, s) => 
+                {
+                    if (!s)
+                    {
+                        if(k == KeyConstants.FUNC_C)
+                        {
+                            using(var repo = new MedicationIntakeRepository())
+                            {
+                                repo.ClearStatistic();
+                            }
+
+                        }
+                        ChangeState_ShowStatistics();
+                    }
+                };
+                Write(DeleteStatistic_Ask);
+
+            }
+            else if (input == KeyConstants.FUNC_B)
+            {
+                ChangeState_Waiting();
+            }           
+        }
         void ChangeState_WaitForTakeoff()
         {
             _state = ModelState.waitingForTakeoff;
-            _currentStateHandleKey = null;
+            if (IS_DEMO)
+            {
+                _currentStateHandleKey = (k, s) =>
+                {
+                    if (k == 37 && s)
+                        ChangeState_Waiting();                    
+                };
+            }
+            else
+                _currentStateHandleKey = null;
             WriteInput("");
             Write(WaitForTakeoffMessage);
         }
@@ -332,6 +421,7 @@ namespace RadXAutomat.Ui
             using(var repo = new MedicationIntakeRepository())
             {
                 repo.RecordIntake(MedicationType.RadAway);
+                repo.CommitOrRollbackOnError();
             }
             ReadRads();
         }
@@ -346,6 +436,7 @@ namespace RadXAutomat.Ui
             using (var repo = new MedicationIntakeRepository())
             {
                 repo.RecordIntake(MedicationType.PureLive);
+                repo.CommitOrRollbackOnError();
             }
             ReadRads();
         }
@@ -360,6 +451,7 @@ namespace RadXAutomat.Ui
             using (var repo = new MedicationIntakeRepository())
             {
                 repo.RecordIntake(MedicationType.RadX,_radXTakeCount);
+                repo.CommitOrRollbackOnError();
             }
             ReadRads();
         }

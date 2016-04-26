@@ -20,7 +20,7 @@ namespace RadXAutomat.Data
         public MedicationIntakeMap()
         {            
             Id(x => x.Id).GeneratedBy.Increment();
-            Version(x => x.Timestamp).Generated.Always();
+            Map(x => x.Timestamp);
             Map(x => x.MedicationType);
             Map(x => x.Amount);
         }

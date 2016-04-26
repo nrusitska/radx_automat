@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -10,10 +11,12 @@ namespace RadXAutomat.Data
     {
         protected ISession Session { get; set; }
         protected ITransaction UnitOfWork { get; set; }
-
-        public RepositoryBase()
+        protected virtual ISession CreateSession()
         {
-            Session = DataManager.GetInstance().GetStaticSession();
+            return DataManager.GetInstance().OpenSession();
+        }
+        public RepositoryBase()
+        {            
             SetupNewUnitOfWork();
         }
 
@@ -21,9 +24,17 @@ namespace RadXAutomat.Data
         {
             if (UnitOfWork != null)
                 UnitOfWork.Dispose();
+            if (Session != null)
+                Session.Dispose();
+            Session = CreateSession();
+            Session.FlushMode = FlushMode.Commit;
             UnitOfWork = Session.BeginTransaction();
+            UnitOfWork.Begin();
         }
-
+        public void Save(object obj)
+        {
+            Session.Save(obj);
+        }
         public void SaveOrUpdate(object obj)
         {
             Session.SaveOrUpdate(obj);
@@ -34,9 +45,11 @@ namespace RadXAutomat.Data
             try
             {
                 UnitOfWork.Commit();
+                Session.Flush();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 UnitOfWork.Rollback();
             }
             finally

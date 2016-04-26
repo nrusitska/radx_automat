@@ -30,7 +30,7 @@ namespace RadXAutomat.Data
         /// <PARAM name="INIPath"></PARAM>
         public IniFile(string INIPath)
         {
-            path = INIPath;
+            path = System.IO.Path.GetFullPath(INIPath);
         }
         /// <summary>
         /// Write Data to the INI File
