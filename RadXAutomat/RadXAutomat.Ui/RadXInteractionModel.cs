@@ -75,6 +75,8 @@ namespace RadXAutomat.Ui
         private CommandOptions _currentCommand;
         private int _radXTakeCount = 0;
         private NfcDongleWrapper _dongleConnector;
+        private string _currentTag = "";
+
         private ArcadeInteractionManager _arcadeManager = new ArcadeInteractionManager();
         public Dispatcher Dispatcher { get; private set; }
         public RadXInteractionModel()
@@ -100,6 +102,7 @@ namespace RadXAutomat.Ui
         private void _dongleConnector_TagLost(object sender, EventArgs e)
         {
             Debug.WriteLine("TagLost, state:" + _state );
+            _currentTag = null;
             if(!IS_DEMO && _state == ModelState.waitingForTakeoff || _state == ModelState.dongleReadySelectAction)
                 ChangeState_Waiting();
         }
@@ -107,6 +110,7 @@ namespace RadXAutomat.Ui
         private void _dongleConnector_TagFound(object sender, string e)
         {
             Debug.WriteLine("TagFound, state:" + _state+" id: "+e);
+            _currentTag = e;
             if (!IS_DEMO && _state == ModelState.waiting)
                 ChangeState_ReadyForAction();
         }
@@ -349,9 +353,20 @@ namespace RadXAutomat.Ui
             _radXTakeCount = 2;
             _state = ModelState.dongleReadySelectAction;
             _currentStateHandleKey = HandleKey_SelectAction;
-            Write(DongleFoundMessage);
-            AudioManager.Instance.PlaySound("Dongle Found.mp3");
-            Thread.Sleep(2000);
+            if (_currentTag == DataManager.GetInstance().GetNfcId("Jack"))
+            {
+                Write(DongleFoundMessage_Jack);
+                AudioManager.Instance.PlaySound("Dongle Found Jack.mp3");
+                Thread.Sleep(5000);
+
+            }
+            else
+            {
+                Write(DongleFoundMessage);
+                AudioManager.Instance.PlaySound("Dongle Found.mp3");
+                Thread.Sleep(2000);
+            }
+
             Write(ShowOptions);
             AudioManager.Instance.PlaySound("Show Options C.mp3");
             HandleKey_SelectAction(int.MinValue, false);

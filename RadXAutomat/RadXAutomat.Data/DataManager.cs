@@ -73,6 +73,13 @@ namespace RadXAutomat.Data
             }
         }
 
+        public string GetNfcId(string name)
+        {
+            var ini = new IniFile(INI_PATH);
+            string id = ini.IniReadValue("NFC", name); ;
+            return id;
+        }
+
         public void Close()
         {
             if(_sf != null)
