@@ -8,7 +8,7 @@ using System.Text;
 
 namespace RadXAutomat.Model
 {
-    public class InteractionManager
+    public class ArcadeInteractionManager
     {
         Process _currentGame;
         public void KillCurrentGame()
@@ -21,15 +21,16 @@ namespace RadXAutomat.Model
         {
             KillCurrentGame();
 
-            IniFile config = new IniFile(Path.GetFullPath("ArcadeCommands.ini"));
-            var command = config.IniReadValue("Commands", key);
+            IniFile config = new IniFile(DataManager.INI_PATH);
+            var command = config.IniReadValue("ArcadeCommands", key);
             var args = command.Split(' ');
             string cmd = args[0];
             string param = string.Join(" ", args.Skip(1));
 
             var startinf = new ProcessStartInfo(cmd, param);
             startinf.WorkingDirectory = Path.GetDirectoryName(cmd);
-
+            startinf.UseShellExecute = false;
+            startinf.CreateNoWindow = true;
             _currentGame = Process.Start(startinf);
         }
 

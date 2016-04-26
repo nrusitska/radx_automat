@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -64,6 +65,7 @@ namespace RadXAutomat.Ui
             +"Zurück geht's mit [B]";
         const string DeleteStatistic_Ask = "Sicher? Dann bestätige mit [C]";
         const string DeleteStatistic_Perform = "Und weg damit.";
+        const string NoGamesOnBattery = "Auf Notstrom sind die geheimen Abschusscodes nicht verfügbar!";
         public RadXWrite Write { get; set; }
         public RadXWrite WriteInput { get; set; }
         public Func<int,double> ShowRadsCountAnimation { get; set; }
@@ -73,6 +75,7 @@ namespace RadXAutomat.Ui
         private CommandOptions _currentCommand;
         private int _radXTakeCount = 0;
         private NfcDongleWrapper _dongleConnector;
+        private ArcadeInteractionManager _arcadeManager = new ArcadeInteractionManager();
         public Dispatcher Dispatcher { get; private set; }
         public RadXInteractionModel()
         {
@@ -152,9 +155,9 @@ namespace RadXAutomat.Ui
                 //                 Thread.Sleep(4000);
                 //                 ChangeState_Waiting();
                 //                 Thread.Sleep(5000);
-                ChangeState_ReadyForAction();
+                //ChangeState_ReadyForAction();
                 //ReadRads();
-                //ChangeState_Waiting();
+                ChangeState_Waiting();
                 //ChangeState_ReadyForAction();
             }));          
         }
@@ -258,14 +261,37 @@ namespace RadXAutomat.Ui
                 }
             }
         }
+        bool checkAndWarnIfBattery()
+        {
+            bool runsOnbattery = SystemInformation.PowerStatus.PowerLineStatus == PowerLineStatus.Offline;
+            if (runsOnbattery)
+            {
+                Write(NoGamesOnBattery);
+                Thread.Sleep(3000);
+                Write(WelcomeMessage);
+            }
+            return !runsOnbattery;
+        }
         void HandleKey_Waiting(int input, bool state)
         {
             if (state)
                 return;
-            else if (input == KeyConstants.FUNC_B)
+            
+            switch (input)
             {
-                ChangeState_ShowStatistics();
+                case KeyConstants.FUNC_B: ChangeState_ShowStatistics(); break;
+                case KeyConstants.GAME_1:
+                    if(checkAndWarnIfBattery())
+                        _arcadeManager.StartGame1(); break;
+                case KeyConstants.GAME_2:
+                    if (checkAndWarnIfBattery())
+                        _arcadeManager.StartGame2(); break;
+                case KeyConstants.GAME_3:
+                    if (checkAndWarnIfBattery())
+                        _arcadeManager.StartGame3(); break;
+                case KeyConstants.GAME_CLEAR: _arcadeManager.KillCurrentGame(); break;
             }
+            
         }
         void HandleKey_ShowStatistics(int input, bool state)
         {
