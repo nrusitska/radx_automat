@@ -85,7 +85,7 @@ namespace RadXAutomat.Ui
             thr.Start();
             while (thr.ThreadState != System.Threading.ThreadState.Running)
                 thr.Join(10);
-            _dongleConnector = new NfcDongleWrapper();
+            _dongleConnector = new NfcDongleWrapper(DataManager.GetInstance().GetNfcWriteKey());
             if (!IS_DEMO)
             {
                 _dongleConnector.TagFound += _dongleConnector_TagFound;

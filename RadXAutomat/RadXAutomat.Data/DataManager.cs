@@ -59,6 +59,20 @@ namespace RadXAutomat.Data
             cfg.BuildConfiguration();
         }
 
+        public string GetNfcWriteKey()
+        {
+            var ini = new IniFile(INI_PATH);
+            string key = ini.IniReadValue("NFC", "WriteKey");
+            if (string.IsNullOrWhiteSpace(key))
+                return null;
+            else
+            {
+                //Base64 Coding is just to obscure the Key in the File
+                var arr = Convert.FromBase64String(key);
+                return System.Text.ASCIIEncoding.ASCII.GetString(arr);
+            }
+        }
+
         public void Close()
         {
             if(_sf != null)

@@ -105,6 +105,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="RadXAutomat.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <Resource Include="8-BIT WONDER.TTF">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

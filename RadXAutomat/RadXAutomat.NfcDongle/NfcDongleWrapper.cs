@@ -12,13 +12,17 @@ namespace RadXAutomat.NfcDongle
 {
     public class NfcDongleWrapper
     {
-        const string WRITE_KEY = null;
+        private string _writeKey = null;
         public event EventHandler<string> TagFound;
         public event EventHandler TagLost;
         Thread _worker;
         bool _cancel;
 
         RadApi _api;
+        public NfcDongleWrapper(string writeKey)
+        {
+            _writeKey = writeKey;
+        }
 //         public void CancelSearch()
 //         {
 //             _cancel = true;
@@ -75,7 +79,7 @@ namespace RadXAutomat.NfcDongle
         {
             if (_api != null)
                 DisposeRadApi();
-            _api = new RadApi(WRITE_KEY);
+            _api = new RadApi(_writeKey);
             _api.TagFound += Api_TagFound;
             _api.NoTagFound += Api_NoTagFound;
         }

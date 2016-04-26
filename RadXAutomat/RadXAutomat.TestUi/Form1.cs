@@ -17,7 +17,7 @@ namespace RadXAutomat.TestUi
         public Form1()
         {
             InitializeComponent();
-            _nfcWrapper = new NfcDongleWrapper();
+            _nfcWrapper = new NfcDongleWrapper(null);
             _nfcWrapper.TagFound += _nfcWrapper_TagFound;
             _nfcWrapper.TagLost += _nfcWrapper_TagLost;
             _nfcWrapper.BeginSearch();
