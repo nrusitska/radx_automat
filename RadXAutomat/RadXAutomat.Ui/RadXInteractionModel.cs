@@ -452,7 +452,8 @@ namespace RadXAutomat.Ui
             //bis 100 grün, bis 200 gelb, dann rot
             if(rads < 0)
             {
-                Write(RadResultMessage_Error);
+
+                Write(rads + "?? "+ RadResultMessage_Error);
                 AudioManager.Instance.PlaySound("Rad Error.mp3");
                 Thread.Sleep(2000);
                 throw new InvalidOperationException();

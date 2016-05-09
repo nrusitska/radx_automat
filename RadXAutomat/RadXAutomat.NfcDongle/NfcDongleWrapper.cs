@@ -19,6 +19,7 @@ namespace RadXAutomat.NfcDongle
         bool _cancel;
 
         RadApi _api;
+        string _lastTag;
         public NfcDongleWrapper(string writeKey)
         {
             _writeKey = writeKey;
@@ -29,11 +30,18 @@ namespace RadXAutomat.NfcDongle
 //         }
         void RaiseTagNotFound()
         {
+            _lastTag = null;
             if (TagLost != null && !_cancel)
                 TagLost(this, null);
         }
         
         CancellationTokenSource _nfcCancelSource = new CancellationTokenSource();
+        object searchLock = new object();
+        private void CancelAsync()
+        {
+            //_nfcCancelSource.Cancel();
+            //_nfcCancelSource = _nfcCancelSource = new CancellationTokenSource();
+        }
         private async void nfcSearchWorker()
         {
             
@@ -47,28 +55,28 @@ namespace RadXAutomat.NfcDongle
                     {
                         Debug.WriteLine("FindTags");
                         _nfcCancelSource = new CancellationTokenSource();
-                        await _api.FindTags();
+                        await _api.FindTags();//.ContinueWith((s) => { },_nfcCancelSource.Token);
                         //var task = _api.FindTags();
                         //task.ContinueWith((t) => { }, _nfcCancelSource.Token, TaskContinuationOptions.None,TaskScheduler.Default);
                         //var cont = task.ContinueWith(t => { System.Diagnostics.Debug.WriteLine("task1 " + t.Status); });
                         Debug.WriteLine("task.wait");
-
+                        //lock (searchLock) { }//Wait for end of Read/WriteAccess
                         //cont.Wait(_nfcCancelSource.Token);
-                        
+                        Thread.Sleep(250);
                         //cont.Dispose();
                         //task.Dispose();
                     }
                     Debug.WriteLine("tag task completed.");
                     //                     Thread.Sleep(500);
-                    //                     while (IsTagConnected() && !_cancel)
-                    //                     {
-                    //                         //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
-                    //                         //immer wieder _api.GetWrittenMilliRads() aufrufen, bis eine Exception kommt, weil das Tag weg ist...
-                    //                         // nicht schön, aber es geht wohl nicht anders...
-                    //                         Thread.Sleep(250);
-                    //                     }
-                    //                     RaiseTagNotFound();
-                    //                     Debug.WriteLine("tag disconnected - restarting search.");
+                    while (IsTagConnected() && !_cancel)
+                    {
+                        //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
+                        //immer wieder _api.GetWrittenMilliRads() aufrufen, bis eine Exception kommt, weil das Tag weg ist...
+                        // nicht schön, aber es geht wohl nicht anders...
+                        Thread.Sleep(250);
+                    }
+                    RaiseTagNotFound();
+                    Debug.WriteLine("tag disconnected - restarting search.");
                 }
                 catch (Exception ex)
                 {
@@ -76,9 +84,9 @@ namespace RadXAutomat.NfcDongle
                     Debug.WriteLine(ex.ToString());
                     RaiseTagNotFound();
                 }
-                Thread.Sleep(500);
+                //Thread.Sleep(500);
             }
-                DisposeRadApi();
+            DisposeRadApi();
             
         }
         void CreateRadApi()
@@ -112,9 +120,14 @@ namespace RadXAutomat.NfcDongle
         {
             DeskIDWrapper.NFC.Tag foundTag = null;
             foundTag = list.First();
-            Debug.WriteLine("tag found: " + foundTag.Id);
-            if (TagFound != null && !_cancel)
-                TagFound(this, foundTag.Id);
+
+            if (foundTag != null && _lastTag != foundTag.Id)
+            {
+                _lastTag = foundTag.Id;
+                Debug.WriteLine("tag found: " + foundTag.Id);
+                if (TagFound != null && !_cancel)
+                    TagFound(this, foundTag.Id);
+            }
         }
 
         public void BeginSearch()
@@ -143,8 +156,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     _api.GetWrittenMilliRads();//wirft unterschiedliche Exceptions, wenn das Tag weg ist.
                 }
                 return true;
@@ -160,8 +174,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
 #if DEBUG
                     return _api.GetWrittenMilliRads() / 1000;
 #else
@@ -171,7 +186,9 @@ namespace RadXAutomat.NfcDongle
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.ToString());
+                string msg = ex.ToString();
+                Console.Out.WriteLine(msg);
+                Debug.WriteLine(msg);
                 RaiseTagNotFound();
                 return -1;
             }
@@ -182,8 +199,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     return _api.GetWrittenMilliRads();
                 }
             }
@@ -199,8 +217,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     _api.TakeRadEx(count);
                 }
             }
@@ -215,8 +234,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     _api.TakeRadAway();
                 }
             }
@@ -231,8 +251,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     _api.TakePureLife();
                 }
             }
@@ -247,8 +268,9 @@ namespace RadXAutomat.NfcDongle
         {
             try
             {
-                lock (_api)
+                lock (searchLock)
                 {
+                    CancelAsync();
                     _api.DoDecon();
                 }
             }
