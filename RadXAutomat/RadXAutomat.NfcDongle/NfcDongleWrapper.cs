@@ -30,9 +30,18 @@ namespace RadXAutomat.NfcDongle
 //         }
         void RaiseTagNotFound()
         {
-            _lastTag = null;
-            if (TagLost != null && !_cancel)
-                TagLost(this, null);
+            Timer timer = null;
+            timer = new Timer((o)=> {
+                timer.Dispose();
+                if (!IsTagConnected())
+                {
+                    _lastTag = null;
+
+                    if (TagLost != null && !_cancel)
+                        TagLost(this, null);
+                }
+
+            },null,500,Timeout.Infinite);         
         }
         
         CancellationTokenSource _nfcCancelSource = new CancellationTokenSource();
@@ -73,7 +82,7 @@ namespace RadXAutomat.NfcDongle
                         //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
                         //immer wieder _api.GetWrittenMilliRads() aufrufen, bis eine Exception kommt, weil das Tag weg ist...
                         // nicht schön, aber es geht wohl nicht anders...
-                        Thread.Sleep(250);
+                        Thread.Sleep(500);
                     }
                     RaiseTagNotFound();
                     Debug.WriteLine("tag disconnected - restarting search.");
