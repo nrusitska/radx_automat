@@ -46,7 +46,7 @@ namespace RadXAutomat.Ui
         const string DongleFoundMessage_Jack = "Na das Händchen kenn ich doch! Ladies and Gentleman - Jack Bones is in the house!";
 
         const string ShowOptions = "Dann lass uns mal loslegen. Wenn Du RadX nehmen willst, kann es gleich losgehen.\n"
-            +"Sag mir mit dem RadX-Knopf, wie viele du nehmen willst.\n"
+            +"Sag mir mit dem RadX-Knopf [E], wie viele du nehmen willst.\n"
             +"Oder Du schaltest mit dem Joystick links oder rechts durch die Möglichkeiten. Du kannst \n"
             +"[RadX nehmen]\n[PureLive nehmen]\n[RadAway nehmen] oder\n[Strahlung auslesen]\n"
             +"Mit [C] geht's dann los!";

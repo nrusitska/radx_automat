@@ -2,6 +2,7 @@
 using NAudio.Wave.SampleProviders;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Media;
 using System.Speech.Synthesis;
@@ -39,22 +40,23 @@ namespace RadXAutomat.Audio
                 _output.Dispose();
                 _output = new WaveOut();
             }));
-            
-            var ac = new Action(() =>
+            if (File.Exists("sounds\\"+sound))
             {
+                var ac = new Action(() =>
+                {
                 //WaveOut _output = new WaveOut();
-                _output.Stop();                
-                var file = new AudioFileReader("sounds\\" + sound);
-                var trimmer = new OffsetSampleProvider(file);
-                trimmer.SkipOver = (offset);
-                if (length != TimeSpan.MaxValue)
-                    trimmer.Take = (length);
-                _output.Init(trimmer);
-                _output.Play();
-            });
-            //{ Priority= ThreadPriority.Highest }.Start();
-            _Dispatcher.BeginInvoke(ac);
-            
+                _output.Stop();
+                    var file = new AudioFileReader("sounds\\" + sound);
+                    var trimmer = new OffsetSampleProvider(file);
+                    trimmer.SkipOver = (offset);
+                    if (length != TimeSpan.MaxValue)
+                        trimmer.Take = (length);
+                    _output.Init(trimmer);
+                    _output.Play();
+                });
+                //{ Priority= ThreadPriority.Highest }.Start();
+                _Dispatcher.BeginInvoke(ac);
+            }
         }
         public void PlaySound(string file)
         {
