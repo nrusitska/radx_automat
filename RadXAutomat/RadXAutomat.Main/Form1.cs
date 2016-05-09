@@ -16,7 +16,7 @@ namespace RadXAutomat.Main
 {
     public partial class Form1 : Form
     {
-        InteractionManager _manager = new InteractionManager();
+        ArcadeInteractionManager _manager = new ArcadeInteractionManager();
         public Form1()
         {
             InitializeComponent();

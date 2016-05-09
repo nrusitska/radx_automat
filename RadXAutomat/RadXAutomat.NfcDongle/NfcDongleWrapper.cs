@@ -34,46 +34,52 @@ namespace RadXAutomat.NfcDongle
         }
         
         CancellationTokenSource _nfcCancelSource = new CancellationTokenSource();
-        private void nfcSearchWorker()
+        private async void nfcSearchWorker()
         {
-            try
-            {
+            
                 CreateRadApi();
                 while (!_cancel)
                 {
+                try
+                {
                     Debug.WriteLine("Begin nfc work loop");
-                    lock (_api)
+                    //lock (_api)
                     {
                         Debug.WriteLine("FindTags");
-                        var task = _api.FindTags();
-                        var cont = task.ContinueWith(t => { System.Diagnostics.Debug.WriteLine("task1 " + t.Status); });
+                        _nfcCancelSource = new CancellationTokenSource();
+                        await _api.FindTags();
+                        //var task = _api.FindTags();
+                        //task.ContinueWith((t) => { }, _nfcCancelSource.Token, TaskContinuationOptions.None,TaskScheduler.Default);
+                        //var cont = task.ContinueWith(t => { System.Diagnostics.Debug.WriteLine("task1 " + t.Status); });
                         Debug.WriteLine("task.wait");
+
+                        //cont.Wait(_nfcCancelSource.Token);
                         
-                        cont.Wait(_nfcCancelSource.Token);
-                        
-                        cont.Dispose();
-                        task.Dispose();
+                        //cont.Dispose();
+                        //task.Dispose();
                     }
                     Debug.WriteLine("tag task completed.");
-                    Thread.Sleep(500);
-                    while (IsTagConnected() && !_cancel)
-                    {
-                        //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
-                        //immer wieder _api.GetWrittenMilliRads() aufrufen, bis eine Exception kommt, weil das Tag weg ist...
-                        // nicht schön, aber es geht wohl nicht anders...
-                        Thread.Sleep(250);
-                    }
-                    RaiseTagNotFound();
-                    Debug.WriteLine("tag disconnected - restarting search.");
+                    //                     Thread.Sleep(500);
+                    //                     while (IsTagConnected() && !_cancel)
+                    //                     {
+                    //                         //Leider wird beim Entfernen gerade das NoTagFound-Event nicht ausgelöst. Momentan als Krücke:
+                    //                         //immer wieder _api.GetWrittenMilliRads() aufrufen, bis eine Exception kommt, weil das Tag weg ist...
+                    //                         // nicht schön, aber es geht wohl nicht anders...
+                    //                         Thread.Sleep(250);
+                    //                     }
+                    //                     RaiseTagNotFound();
+                    //                     Debug.WriteLine("tag disconnected - restarting search.");
                 }
+                catch (Exception ex)
+                {
+                //    _cancel = true;
+                    Debug.WriteLine(ex.ToString());
+                    RaiseTagNotFound();
+                }
+                Thread.Sleep(500);
+            }
                 DisposeRadApi();
-            }
-            catch (Exception ex)
-            {
-                _cancel = true;
-                Debug.WriteLine(ex.ToString());
-                RaiseTagNotFound();
-            }
+            
         }
         void CreateRadApi()
         {

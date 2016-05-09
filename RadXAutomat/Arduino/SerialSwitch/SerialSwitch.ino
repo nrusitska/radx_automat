@@ -2,13 +2,13 @@
 static const int DEBUG = 0;
 struct Input{int pos; int state; };
 static Input inputs[] = {
-/*{30,0},{32,0},{34,0},
-{36,0},{38,0},{40,0},
-{42,0},{44,0},{46,0},
-{48,0},{50,0},{52,0},
-{26,0},{27,0},{28,0},{29,0}
-*/
-{52,0}
+{26,0}, {28,0},
+{30,0}, {32,0},
+{34,0}, {36,0},
+{38,0}, {40,0},
+{42,0}, {44,0},
+{46,0}, {48,0},
+{50,0}, {52,0}
 };
 static int inputs_length = sizeof(inputs) / sizeof(Input);
 
@@ -35,11 +35,11 @@ void loop()
     if(DEBUG)
       digitalWrite(i, state);
     //entprelen
-//    if((state != inputs[i].state))
-//    {
-//      delay(2);
-//      state = digitalRead(inputs[i].pos);
-//    }
+    if((state != inputs[i].state))
+    {
+      delay(2);
+      state = digitalRead(inputs[i].pos);
+    }
     //Änderung per Serial raussenden.
     if((state != inputs[i].state))
     {

@@ -31,7 +31,7 @@ namespace RadXAutomat.Ui
         }
 
 #if DEBUG
-        const bool IS_DEMO = true;
+        const bool IS_DEMO = false;
 #else
         const bool IS_DEMO = false;
 #endif 
@@ -168,6 +168,9 @@ namespace RadXAutomat.Ui
         bool firstStart = true;
         void ChangeState_Locked()
         {
+            ChangeState_Waiting();
+            return;
+
             _state = ModelState.locked;
             _currentStateHandleKey = HandleKey_LockedWaitForUnlock;
             WriteInput("");
@@ -353,19 +356,19 @@ namespace RadXAutomat.Ui
             _radXTakeCount = 2;
             _state = ModelState.dongleReadySelectAction;
             _currentStateHandleKey = HandleKey_SelectAction;
-            if (_currentTag == DataManager.GetInstance().GetNfcId("Jack"))
-            {
-                Write(DongleFoundMessage_Jack);
-                AudioManager.Instance.PlaySound("Dongle Found Jack.mp3");
-                Thread.Sleep(5000);
-
-            }
-            else
-            {
-                Write(DongleFoundMessage);
-                AudioManager.Instance.PlaySound("Dongle Found.mp3");
-                Thread.Sleep(2000);
-            }
+//             if (_currentTag == DataManager.GetInstance().GetNfcId("Jack"))
+//             {
+//                 Write(DongleFoundMessage_Jack);
+//                 AudioManager.Instance.PlaySound("Dongle Found Jack.mp3");
+//                 Thread.Sleep(5000);
+// 
+//             }
+//             else
+//             {
+//                 Write(DongleFoundMessage);
+//                 AudioManager.Instance.PlaySound("Dongle Found.mp3");
+//                 Thread.Sleep(2000);
+//             }
 
             Write(ShowOptions);
             AudioManager.Instance.PlaySound("Show Options C.mp3");
@@ -376,7 +379,7 @@ namespace RadXAutomat.Ui
         {
             if (state)
                 return;
-            if (input == KeyConstants.FUNC_C)
+            if (input == KeyConstants.FUNC_C || ((Key)input) == Key.Enter )
             {
                 DoCommandAction();
                 return;
@@ -434,7 +437,7 @@ namespace RadXAutomat.Ui
         {
             Write(ReadRadsMessage);
             AudioManager.Instance.PlaySound("ReadRad.mp3");
-            Thread.Sleep(5300);
+            Thread.Sleep(3300);
             int rads = 0;
             if (IS_DEMO)
             { 
